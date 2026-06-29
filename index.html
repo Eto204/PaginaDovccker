@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Centro de Investigación UAQ | Panel Docker</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-icon">UAQ</div>
+      <div>
+        <div class="logo-text">Centro de Investigación</div>
+        <div class="logo-sub">Panel Docker</div>
+      </div>
+    </div>
+
+    <nav class="sidebar-nav">
+      <a href="#" class="nav-item active" data-section="containers">
+        <span class="nav-icon">▦</span> Contenedores
+      </a>
+      <a href="#" class="nav-item" data-section="build">
+        <span class="nav-icon">◇</span> Build
+      </a>
+      <a href="#" class="nav-item" data-section="logs">
+        <span class="nav-icon">☰</span> Logs
+      </a>
+    </nav>
+
+    <div class="sidebar-status">
+      <span class="status-dot active"></span>
+      <span>Servidor activo</span>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <header class="topbar">
+      <div class="topbar-left">
+        <span class="section-label" id="section-title">Contenedores</span>
+        <span class="breadcrumb">/ gestión del sistema</span>
+      </div>
+
+      <div class="topbar-right">
+        <span class="env-badge">LOCAL</span>
+        <span class="host-label">unix:///var/run/docker.sock</span>
+      </div>
+    </header>
+
+    <section class="panel-section active" id="section-containers">
+      <div class="section-intro">
+        <h1>Gestión de contenedores</h1>
+        <p class="hint-text">
+          Selecciona un contenedor y la acción que deseas ejecutar.
+        </p>
+      </div>
+
+      <div class="form-card">
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Nombre del contenedor</label>
+            <input type="text" class="field-input" id="cnt-name" placeholder="Ej. my_app_1" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Acción</label>
+            <select class="field-select" id="cnt-action">
+              <option value="start">Iniciar</option>
+              <option value="stop">Detener</option>
+              <option value="restart">Reiniciar</option>
+              <option value="rm">Eliminar</option>
+              <option value="inspect">Inspeccionar</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="cmd-preview-wrap">
+          <span class="cmd-prefix">$</span>
+          <code class="cmd-preview" id="cnt-cmd-preview">docker start &lt;contenedor&gt;</code>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" onclick="runContainer()">Ejecutar</button>
+          <button class="btn-ghost" onclick="resetContainer()">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="output-wrap" id="cnt-output" style="display:none">
+        <div class="output-header">
+          <span class="output-label">Resultado</span>
+          <button class="close-output" onclick="closeOutput('cnt-output')">✕</button>
+        </div>
+        <pre class="output-block" id="cnt-output-text"></pre>
+      </div>
+    </section>
+
+    <section class="panel-section" id="section-build">
+      <div class="section-intro">
+        <h1>Construcción de imágenes</h1>
+        <p class="hint-text">
+          Construye una imagen desde un Dockerfile especificando el contexto y el tag.
+        </p>
+      </div>
+
+      <div class="form-card">
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Tag de la imagen</label>
+            <input type="text" class="field-input" id="build-tag" placeholder="Ej. miapp:latest" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Ruta del contexto</label>
+            <input type="text" class="field-input" id="build-ctx" placeholder="Ej. ./app o ." />
+          </div>
+        </div>
+
+        <div class="form-row single">
+          <div class="field-group">
+            <label class="field-label">Dockerfile opcional</label>
+            <input type="text" class="field-input" id="build-file" placeholder="Ej. ./app/Dockerfile" />
+          </div>
+        </div>
+
+        <div class="flags-row">
+          <label class="flag-item">
+            <input type="checkbox" id="build-nocache" class="flag-check" />
+            <span class="flag-text">--no-cache</span>
+          </label>
+
+          <label class="flag-item">
+            <input type="checkbox" id="build-pull" class="flag-check" />
+            <span class="flag-text">--pull</span>
+          </label>
+
+          <label class="flag-item">
+            <input type="checkbox" id="build-rm" class="flag-check" checked />
+            <span class="flag-text">--rm</span>
+          </label>
+        </div>
+
+        <div class="cmd-preview-wrap">
+          <span class="cmd-prefix">$</span>
+          <code class="cmd-preview" id="build-cmd-preview">docker build -t &lt;tag&gt; &lt;contexto&gt;</code>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" onclick="runBuild()">Construir</button>
+          <button class="btn-ghost" onclick="resetBuild()">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="output-wrap" id="build-output" style="display:none">
+        <div class="output-header">
+          <span class="output-label">Resultado</span>
+          <button class="close-output" onclick="closeOutput('build-output')">✕</button>
+        </div>
+        <pre class="output-block" id="build-output-text"></pre>
+      </div>
+    </section>
+
+    <section class="panel-section" id="section-logs">
+      <div class="section-intro">
+        <h1>Consulta de logs</h1>
+        <p class="hint-text">
+          Obtén los registros de un contenedor con opciones de filtrado.
+        </p>
+      </div>
+
+      <div class="form-card">
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Nombre del contenedor</label>
+            <input type="text" class="field-input" id="log-name" placeholder="Ej. nginx_proxy" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Últimas líneas</label>
+            <input type="number" class="field-input" id="log-tail" placeholder="100" min="1" max="10000" />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="field-group">
+            <label class="field-label">Desde</label>
+            <input type="text" class="field-input" id="log-since" placeholder="Ej. 30m, 1h, 2024-01-01" />
+          </div>
+
+          <div class="field-group">
+            <label class="field-label">Hasta</label>
+            <input type="text" class="field-input" id="log-until" placeholder="Ej. 10m" />
+          </div>
+        </div>
+
+        <div class="flags-row">
+          <label class="flag-item">
+            <input type="checkbox" id="log-timestamps" class="flag-check" />
+            <span class="flag-text">Mostrar timestamps</span>
+          </label>
+
+          <label class="flag-item">
+            <input type="checkbox" id="log-follow" class="flag-check" />
+            <span class="flag-text">Seguir en tiempo real</span>
+          </label>
+        </div>
+
+        <div class="cmd-preview-wrap">
+          <span class="cmd-prefix">$</span>
+          <code class="cmd-preview" id="log-cmd-preview">docker logs &lt;contenedor&gt;</code>
+        </div>
+
+        <div class="btn-row">
+          <button class="btn-primary" onclick="runLogs()">Ver logs</button>
+          <button class="btn-ghost" onclick="resetLogs()">Limpiar</button>
+        </div>
+      </div>
+
+      <div class="output-wrap" id="log-output" style="display:none">
+        <div class="output-header">
+          <span class="output-label">Resultado</span>
+          <button class="close-output" onclick="closeOutput('log-output')">✕</button>
+        </div>
+        <pre class="output-block" id="log-output-text"></pre>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="modal-overlay" id="confirm-modal" style="display:none">
+    <div class="modal-box">
+      <div class="modal-header">
+        <span class="modal-icon">⚠</span>
+        <span class="modal-title">Confirmar ejecución</span>
+      </div>
+
+      <p class="modal-body">Se enviará el siguiente comando al servidor:</p>
+
+      <div class="modal-cmd-wrap">
+        <span class="cmd-prefix">$</span>
+        <code class="modal-cmd" id="modal-cmd-text"></code>
+      </div>
+
+      <div class="modal-btns">
+        <button class="btn-danger" id="modal-confirm-btn">Ejecutar</button>
+        <button class="btn-ghost" onclick="closeModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
