@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Construir Imagen — Panel Docker</title>
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="build.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🐳</span>
+      <h1>Panel Docker</h1>
+    </div>
+    <div class="user">
+      <span class="user-name">Hola, Juan</span>
+      <div class="avatar">J</div>
+      <button class="logout-link" data-logout>Salir</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav>
+        <a href="dashboard.html" class="nav-item">📦 Mis Aplicaciones</a>
+        <a href="build.html" class="nav-item active">🏗️ Construir Imagen</a>
+        <a href="logs.html" class="nav-item">📜 Ver Registros</a>
+        <a href="settings.html" class="nav-item">⚙️ Ajustes</a>
+      </nav>
+      <div class="profile-box">
+        <p class="profile-label">Perfil activo</p>
+        <p class="profile-name">Juan Pérez</p>
+        <p class="profile-hint">Solo ves tus propios contenedores</p>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <h2>🏗️ Construir una imagen</h2>
+        <p class="subtitle">Rellena los campos y nosotros armamos el comando por ti.</p>
+      </section>
+
+      <section class="panel">
+        <form class="form" id="buildForm">
+          <label>
+            Nombre de la aplicación
+            <input type="text" id="appName" placeholder="ej: mi-pagina-web" />
+          </label>
+          <label>
+            Carpeta del proyecto
+            <input type="text" id="appPath" placeholder="ej: /home/juan/mi-proyecto" />
+          </label>
+          <label>
+            Versión (etiqueta)
+            <input type="text" id="appVersion" placeholder="ej: 1.0" />
+          </label>
+          <div class="preview">
+            <span class="preview-label">Se ejecutará:</span>
+            <code>docker build -t <b id="previewName">mi-pagina-web</b>:<b id="previewVersion">1.0</b> <b id="previewPath">/home/juan/mi-proyecto</b></code>
+          </div>
+          <button type="button" class="btn btn-primary btn-large" id="buildBtn">🚀 Construir ahora</button>
+        </form>
+      </section>
+
+      <section class="panel" id="buildLogPanel" style="display:none;">
+        <h2>Progreso del build</h2>
+        <div class="logs" id="buildLog"></div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>Panel Docker Simple · Hecho para que cualquiera pueda usar Docker sin complicaciones</p>
+  </footer>
+
+  <div id="toastContainer"></div>
+
+  <script src="auth.js"></script>
+  <script src="app-data.js"></script>
+  <script>
+    requireAuth('index.html');
+    paintUserInTopbar();
+    wireLogout('index.html');
+    applyStoredTheme();
+
+    const appName = document.getElementById('appName');
+    const appPath = document.getElementById('appPath');
+    const appVersion = document.getElementById('appVersion');
+    const previewName = document.getElementById('previewName');
+    const previewVersion = document.getElementById('previewVersion');
+    const previewPath = document.getElementById('previewPath');
+    const buildPanel = document.getElementById('buildLogPanel');
+    const buildLog = document.getElementById('buildLog');
+    const buildBtn = document.getElementById('buildBtn');
+
+    function updatePreview() {
+      previewName.textContent = appName.value.trim() || 'mi-pagina-web';
+      previewVersion.textContent = appVersion.value.trim() || '1.0';
+      previewPath.textContent = appPath.value.trim() || '/home/juan/mi-proyecto';
+    }
+    [appName, appPath, appVersion].forEach(el => el.addEventListener('input', updatePreview));
+
+    function addBuildLine(text, type) {
+      const p = document.createElement('p');
+      if (type) p.className = `log-${type}`;
+      const time = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+      p.innerHTML = `<span class="log-time">${time}</span> ${text}`;
+      buildLog.appendChild(p);
+      buildLog.scrollTop = buildLog.scrollHeight;
+    }
+
+    buildBtn.addEventListener('click', () => {
+      const name = appName.value.trim() || 'mi-pagina-web';
+      const path = appPath.value.trim() || '/home/juan/mi-proyecto';
+      const version = appVersion.value.trim() || '1.0';
+
+      buildPanel.style.display = 'block';
+      buildLog.innerHTML = '';
+      buildBtn.disabled = true;
+      buildBtn.textContent = '⏳ Construyendo…';
+
+      const steps = [
+        `Enviando contexto de build desde ${path}`,
+        `Resolviendo dependencias`,
+        `Construyendo capas de la imagen`,
+        `Etiquetando como ${name}:${version}`,
+      ];
+      steps.forEach((s, i) => setTimeout(() => addBuildLine(s, null), i * 500));
+
+      setTimeout(() => {
+        addBuildLine(`✅ Imagen ${name}:${version} construida correctamente`, 'ok');
+        const key = addApp(name, `Imagen personalizada · v${version}`);
+        addBuildLine(`📦 "${name}" agregada a Mis Aplicaciones y encendida`, 'ok');
+        notify(`✅ ${name} construida y desplegada`, 'ok');
+        buildBtn.disabled = false;
+        buildBtn.textContent = '🚀 Construir ahora';
+      }, steps.length * 500 + 400);
+    });
+  </script>
+</body>
+</html>

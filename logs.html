@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ver Registros — Panel Docker</title>
+  <link rel="stylesheet" href="base.css" />
+  <link rel="stylesheet" href="logs.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo">🐳</span>
+      <h1>Panel Docker</h1>
+    </div>
+    <div class="user">
+      <span class="user-name">Hola, Juan</span>
+      <div class="avatar">J</div>
+      <button class="logout-link" data-logout>Salir</button>
+    </div>
+  </header>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <nav>
+        <a href="dashboard.html" class="nav-item">📦 Mis Aplicaciones</a>
+        <a href="build.html" class="nav-item">🏗️ Construir Imagen</a>
+        <a href="logs.html" class="nav-item active">📜 Ver Registros</a>
+        <a href="settings.html" class="nav-item">⚙️ Ajustes</a>
+      </nav>
+      <div class="profile-box">
+        <p class="profile-label">Perfil activo</p>
+        <p class="profile-name">Juan Pérez</p>
+        <p class="profile-hint">Solo ves tus propios contenedores</p>
+      </div>
+    </aside>
+
+    <main class="content">
+      <section class="hero">
+        <h2>📜 Registros</h2>
+        <p class="subtitle">Revisa qué ha estado haciendo cada una de tus aplicaciones.</p>
+      </section>
+
+      <section class="panel">
+        <label class="log-select-label" for="appSelect">Aplicación</label>
+        <select class="log-select" id="appSelect"></select>
+        <div class="logs" id="logsBox"></div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    <p>Panel Docker Simple · Hecho para que cualquiera pueda usar Docker sin complicaciones</p>
+  </footer>
+
+  <div id="toastContainer"></div>
+
+  <script src="auth.js"></script>
+  <script src="app-data.js"></script>
+  <script>
+    requireAuth('index.html');
+    paintUserInTopbar();
+    wireLogout('index.html');
+    applyStoredTheme();
+
+    const appSelect = document.getElementById('appSelect');
+    const logsBox = document.getElementById('logsBox');
+
+    // Llena el selector con todas las apps existentes (incluye las construidas)
+    getApps().forEach(app => {
+      const opt = document.createElement('option');
+      opt.value = app.key;
+      opt.textContent = app.name;
+      appSelect.appendChild(opt);
+    });
+
+    function renderLogs(key) {
+      logsBox.innerHTML = '';
+      const entries = getLogs(key);
+      if (entries.length === 0) {
+        logsBox.innerHTML = '<p>Sin registros todavía.</p>';
+        return;
+      }
+      entries.forEach(entry => {
+        const p = document.createElement('p');
+        if (entry.type) p.className = `log-${entry.type}`;
+        p.innerHTML = `<span class="log-time">${entry.time}</span> ${entry.text}`;
+        logsBox.appendChild(p);
+      });
+      logsBox.scrollTop = logsBox.scrollHeight;
+    }
+
+    // Si venimos de "Ver logs" en una tarjeta, respeta ?app=xxx
+    const params = new URLSearchParams(window.location.search);
+    const requested = params.get('app');
+    const apps = getApps();
+    const initialKey = (requested && apps.some(a => a.key === requested)) ? requested : (apps[0] && apps[0].key);
+    if (initialKey) {
+      appSelect.value = initialKey;
+      renderLogs(initialKey);
+    }
+
+    appSelect.addEventListener('change', () => renderLogs(appSelect.value));
+  </script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+/* ============================================
+   base.css — estilos COMPARTIDOS entre vistas
+   (topbar, sidebar, layout, botones, panel, footer)
+   Cada vista además carga su propio CSS con los
+   estilos que le pertenecen solo a ella.
+   ============================================ */
+
+:root {
+  --bg: #0f172a;
+  --panel-bg: #1e293b;
+  --border: #334155;
+  --text: #e2e8f0;
+  --text-strong: #f1f5f9;
+  --muted: #94a3b8;
+  --muted-2: #64748b;
+  --accent: #38bdf8;
+  --accent-ink: #0f172a;
+  --danger: #ef4444;
+  --secondary: #475569;
+  --success: #4ade80;
+  --success-bg: rgba(34,197,94,.15);
+  --off-bg: rgba(148,163,184,.15);
+  --warn: #fbbf24;
+}
+body.light-theme {
+  --bg: #f1f5f9;
+  --panel-bg: #ffffff;
+  --border: #e2e8f0;
+  --text: #1e293b;
+  --text-strong: #0f172a;
+  --muted: #475569;
+  --muted-2: #64748b;
+  --accent: #0284c7;
+  --accent-ink: #ffffff;
+  --danger: #dc2626;
+  --secondary: #64748b;
+  --success: #16a34a;
+  --success-bg: rgba(22,163,74,.12);
+  --off-bg: rgba(100,116,139,.12);
+  --warn: #d97706;
+}
+
+/* ====== Base ====== */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  transition: background .2s, color .2s;
+}
+
+/* ====== Barra superior ====== */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 24px;
+  background: var(--panel-bg);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.brand { display: flex; align-items: center; gap: 10px; }
+.logo { font-size: 28px; }
+.brand h1 { font-size: 20px; color: var(--accent); font-weight: 700; }
+.user { display: flex; align-items: center; gap: 12px; }
+.user-name { font-size: 14px; color: var(--muted); }
+.avatar {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--accent); color: var(--accent-ink);
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700;
+}
+.logout-link {
+  font-size: 13px;
+  color: var(--muted);
+  text-decoration: none;
+  border: 1px solid var(--border);
+  padding: 6px 10px;
+  border-radius: 8px;
+  transition: color .2s, border-color .2s;
+  cursor: pointer;
+  background: transparent;
+  font-family: inherit;
+}
+.logout-link:hover { color: var(--text-strong); border-color: var(--accent); }
+
+/* ====== Layout ====== */
+.layout { display: flex; min-height: calc(100vh - 64px - 60px); }
+
+/* ====== Menú lateral ====== */
+.sidebar {
+  width: 240px;
+  background: var(--panel-bg);
+  padding: 20px 12px;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.sidebar nav { display: flex; flex-direction: column; gap: 4px; }
+.nav-item {
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+  font-size: 14px;
+  transition: background .2s;
+  display: block;
+}
+.nav-item:hover { background: var(--border); }
+.nav-item.active { background: var(--accent); color: var(--accent-ink); font-weight: 600; }
+
+.profile-box {
+  margin-top: 20px;
+  padding: 14px;
+  background: var(--bg);
+  border-radius: 10px;
+  border: 1px solid var(--border);
+}
+.profile-label { font-size: 11px; color: var(--muted-2); text-transform: uppercase; letter-spacing: 1px; }
+.profile-name { font-size: 15px; font-weight: 600; margin-top: 4px; color: var(--text-strong); }
+.profile-hint { font-size: 12px; color: var(--muted-2); margin-top: 6px; }
+
+/* ====== Contenido (contenedor genérico) ====== */
+.content { flex: 1; padding: 28px; overflow-y: auto; }
+.hero h2 { font-size: 28px; color: var(--text-strong); }
+.subtitle { color: var(--muted); margin-top: 4px; font-size: 14px; }
+
+/* ====== Botones (usados en todas las vistas) ====== */
+.btn {
+  border: none;
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity .2s, transform .1s;
+}
+.btn:hover { opacity: .9; }
+.btn:active { transform: scale(.97); }
+.btn-primary { background: var(--accent); color: var(--accent-ink); }
+.btn-danger { background: var(--danger); color: white; }
+.btn-secondary { background: var(--secondary); color: white; }
+.btn-ghost { background: transparent; color: var(--text); border: 1px solid var(--border); }
+.btn-large { padding: 12px 22px; font-size: 15px; margin-top: 12px; }
+
+/* ====== Panel genérico (contenedor de tarjeta grande) ====== */
+.panel {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 22px;
+  margin-top: 24px;
+}
+.panel h2 { font-size: 20px; color: var(--text-strong); margin-bottom: 4px; }
+
+/* ====== Footer ====== */
+.footer {
+  text-align: center;
+  padding: 20px;
+  color: var(--muted-2);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
+  background: var(--panel-bg);
+}
+
+/* ====== Toasts (notificaciones) ====== */
+#toastContainer {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 999;
+}
+.toast {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--accent);
+  color: var(--text-strong);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 13px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.35);
+  opacity: 0;
+  transform: translateX(20px);
+  transition: opacity .25s, transform .25s;
+  max-width: 280px;
+}
+.toast.show { opacity: 1; transform: translateX(0); }
+.toast-ok { border-left-color: var(--success); }
+.toast-warn { border-left-color: var(--warn); }
+
+/* ====== Móvil ====== */
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--border); }
+  .sidebar nav { flex-direction: row; overflow-x: auto; }
+  .nav-item { white-space: nowrap; }
+  .profile-box { display: none; }
+  .content { padding: 18px; }
+  .hero h2 { font-size: 22px; }
+}

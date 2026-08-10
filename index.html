@@ -3,252 +3,142 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Centro de Investigación UAQ | Panel Docker</title>
-  <link rel="stylesheet" href="style.css" />
+  <title>Acceso — Panel Docker</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <main class="login-screen">
+    <section class="login-shell">
+      <div class="login-info">
+        <div class="login-brand">
+          <span class="login-logo">🐳</span>
+          <div>
+            <h1>Panel Docker</h1>
+            <p>Administra tus contenedores sin escribir comandos.</p>
+          </div>
+        </div>
 
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-icon">UAQ</div>
-      <div>
-        <div class="logo-text">Centro de Investigación</div>
-        <div class="logo-sub">Panel Docker</div>
-      </div>
-    </div>
-
-    <nav class="sidebar-nav">
-      <a href="#" class="nav-item active" data-section="containers">
-        <span class="nav-icon">▦</span> Contenedores
-      </a>
-      <a href="#" class="nav-item" data-section="build">
-        <span class="nav-icon">◇</span> Build
-      </a>
-      <a href="#" class="nav-item" data-section="logs">
-        <span class="nav-icon">☰</span> Logs
-      </a>
-    </nav>
-
-    <div class="sidebar-status">
-      <span class="status-dot active"></span>
-      <span>Servidor activo</span>
-    </div>
-  </aside>
-
-  <main class="main">
-
-    <header class="topbar">
-      <div class="topbar-left">
-        <span class="section-label" id="section-title">Contenedores</span>
-        <span class="breadcrumb">/ gestión del sistema</span>
+        <div class="features">
+          <p>✅ Tu nombre se muestra automáticamente en el panel.</p>
+          <p>✅ Puedes iniciar sesión, registrarte o entrar con Google.</p>
+          <p>✅ La sesión se guarda en este navegador con localStorage.</p>
+        </div>
       </div>
 
-      <div class="topbar-right">
-        <span class="env-badge">LOCAL</span>
-        <span class="host-label">unix:///var/run/docker.sock</span>
-      </div>
-    </header>
+      <div class="login-card">
+        <div class="tabs" role="tablist">
+          <button class="tab active" type="button" data-tab="login">Iniciar sesión</button>
+          <button class="tab" type="button" data-tab="register">Registrarme</button>
+        </div>
 
-    <section class="panel-section active" id="section-containers">
-      <div class="section-intro">
-        <h1>Gestión de contenedores</h1>
-        <p class="hint-text">
-          Selecciona un contenedor y la acción que deseas ejecutar.
+        <div class="message" id="messageBox" aria-live="polite"></div>
+
+        <form class="auth-form active" id="loginForm">
+          <label>
+            Correo electrónico
+            <input type="email" id="loginEmail" placeholder="tu.correo@gmail.com" autocomplete="email" required />
+          </label>
+
+          <label>
+            Contraseña
+            <input type="password" id="loginPassword" placeholder="Tu contraseña" autocomplete="current-password" required />
+          </label>
+
+          <button type="submit" class="primary-btn">Entrar al panel</button>
+        </form>
+
+        <form class="auth-form" id="registerForm">
+          <label>
+            Nombre completo
+            <input type="text" id="registerName" placeholder="Ej: Alejandro Estrada" autocomplete="name" required />
+          </label>
+
+          <label>
+            Correo electrónico
+            <input type="email" id="registerEmail" placeholder="tu.correo@gmail.com" autocomplete="email" required />
+          </label>
+
+          <label>
+            Contraseña
+            <input type="password" id="registerPassword" placeholder="Mínimo 6 caracteres" autocomplete="new-password" required />
+          </label>
+
+          <button type="submit" class="primary-btn">Crear cuenta</button>
+        </form>
+
+        <div class="divider"><span>o continúa con</span></div>
+
+        <button type="button" class="google-btn" id="googleLoginBtn">
+          <svg class="google-icon" viewBox="0 0 48 48" width="20" height="20" aria-hidden="true">
+            <path fill="#FFC107" d="M43.6 20.5H42V20.4H24v7.2h11.3c-1.6 4.6-6 7.9-11.3 7.9-6.7 0-12.1-5.4-12.1-12.1S17.3 11.3 24 11.3c3.1 0 5.9 1.2 8 3.1l5.1-5.1C33.9 6 29.2 4 24 4 12.9 4 4 12.9 4 24s8.9 20 20 20 20-8.9 20-20c0-1.2-.1-2.4-.4-3.5z"/>
+            <path fill="#FF3D00" d="M6.3 14.7l5.9 4.3C13.8 15.6 18.5 12.5 24 12.5c3.1 0 5.9 1.2 8 3.1l5.1-5.1C33.9 6 29.2 4 24 4c-7.4 0-13.8 4.1-17.1 10.2z"/>
+            <path fill="#4CAF50" d="M24 44c5.1 0 9.8-1.9 13.3-5.1l-6.1-5.2c-2 1.4-4.6 2.3-7.2 2.3-5.3 0-9.7-3.3-11.3-7.9l-6.1 4.7C9.5 39.5 16.2 44 24 44z"/>
+            <path fill="#1976D2" d="M43.6 20.5H42V20.4H24v7.2h11.3c-.8 2.3-2.3 4.3-4.1 5.6l6.1 5.2C39.6 36.1 44 30.6 44 24c0-1.2-.1-2.4-.4-3.5z"/>
+          </svg>
+          <span>Google</span>
+        </button>
+
+        <p class="login-hint">
+          Demo local: no usa backend real todavía. Los usuarios se guardan en este navegador.
         </p>
       </div>
-
-      <div class="form-card">
-        <div class="form-row">
-          <div class="field-group">
-            <label class="field-label">Nombre del contenedor</label>
-            <input type="text" class="field-input" id="cnt-name" placeholder="Ej. my_app_1" />
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Acción</label>
-            <select class="field-select" id="cnt-action">
-              <option value="start">Iniciar</option>
-              <option value="stop">Detener</option>
-              <option value="restart">Reiniciar</option>
-              <option value="rm">Eliminar</option>
-              <option value="inspect">Inspeccionar</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="cmd-preview-wrap">
-          <span class="cmd-prefix">$</span>
-          <code class="cmd-preview" id="cnt-cmd-preview">docker start &lt;contenedor&gt;</code>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-primary" onclick="runContainer()">Ejecutar</button>
-          <button class="btn-ghost" onclick="resetContainer()">Limpiar</button>
-        </div>
-      </div>
-
-      <div class="output-wrap" id="cnt-output" style="display:none">
-        <div class="output-header">
-          <span class="output-label">Resultado</span>
-          <button class="close-output" onclick="closeOutput('cnt-output')">✕</button>
-        </div>
-        <pre class="output-block" id="cnt-output-text"></pre>
-      </div>
     </section>
-
-    <section class="panel-section" id="section-build">
-      <div class="section-intro">
-        <h1>Construcción de imágenes</h1>
-        <p class="hint-text">
-          Construye una imagen desde un Dockerfile especificando el contexto y el tag.
-        </p>
-      </div>
-
-      <div class="form-card">
-        <div class="form-row">
-          <div class="field-group">
-            <label class="field-label">Tag de la imagen</label>
-            <input type="text" class="field-input" id="build-tag" placeholder="Ej. miapp:latest" />
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Ruta del contexto</label>
-            <input type="text" class="field-input" id="build-ctx" placeholder="Ej. ./app o ." />
-          </div>
-        </div>
-
-        <div class="form-row single">
-          <div class="field-group">
-            <label class="field-label">Dockerfile opcional</label>
-            <input type="text" class="field-input" id="build-file" placeholder="Ej. ./app/Dockerfile" />
-          </div>
-        </div>
-
-        <div class="flags-row">
-          <label class="flag-item">
-            <input type="checkbox" id="build-nocache" class="flag-check" />
-            <span class="flag-text">--no-cache</span>
-          </label>
-
-          <label class="flag-item">
-            <input type="checkbox" id="build-pull" class="flag-check" />
-            <span class="flag-text">--pull</span>
-          </label>
-
-          <label class="flag-item">
-            <input type="checkbox" id="build-rm" class="flag-check" checked />
-            <span class="flag-text">--rm</span>
-          </label>
-        </div>
-
-        <div class="cmd-preview-wrap">
-          <span class="cmd-prefix">$</span>
-          <code class="cmd-preview" id="build-cmd-preview">docker build -t &lt;tag&gt; &lt;contexto&gt;</code>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-primary" onclick="runBuild()">Construir</button>
-          <button class="btn-ghost" onclick="resetBuild()">Limpiar</button>
-        </div>
-      </div>
-
-      <div class="output-wrap" id="build-output" style="display:none">
-        <div class="output-header">
-          <span class="output-label">Resultado</span>
-          <button class="close-output" onclick="closeOutput('build-output')">✕</button>
-        </div>
-        <pre class="output-block" id="build-output-text"></pre>
-      </div>
-    </section>
-
-    <section class="panel-section" id="section-logs">
-      <div class="section-intro">
-        <h1>Consulta de logs</h1>
-        <p class="hint-text">
-          Obtén los registros de un contenedor con opciones de filtrado.
-        </p>
-      </div>
-
-      <div class="form-card">
-        <div class="form-row">
-          <div class="field-group">
-            <label class="field-label">Nombre del contenedor</label>
-            <input type="text" class="field-input" id="log-name" placeholder="Ej. nginx_proxy" />
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Últimas líneas</label>
-            <input type="number" class="field-input" id="log-tail" placeholder="100" min="1" max="10000" />
-          </div>
-        </div>
-
-        <div class="form-row">
-          <div class="field-group">
-            <label class="field-label">Desde</label>
-            <input type="text" class="field-input" id="log-since" placeholder="Ej. 30m, 1h, 2024-01-01" />
-          </div>
-
-          <div class="field-group">
-            <label class="field-label">Hasta</label>
-            <input type="text" class="field-input" id="log-until" placeholder="Ej. 10m" />
-          </div>
-        </div>
-
-        <div class="flags-row">
-          <label class="flag-item">
-            <input type="checkbox" id="log-timestamps" class="flag-check" />
-            <span class="flag-text">Mostrar timestamps</span>
-          </label>
-
-          <label class="flag-item">
-            <input type="checkbox" id="log-follow" class="flag-check" />
-            <span class="flag-text">Seguir en tiempo real</span>
-          </label>
-        </div>
-
-        <div class="cmd-preview-wrap">
-          <span class="cmd-prefix">$</span>
-          <code class="cmd-preview" id="log-cmd-preview">docker logs &lt;contenedor&gt;</code>
-        </div>
-
-        <div class="btn-row">
-          <button class="btn-primary" onclick="runLogs()">Ver logs</button>
-          <button class="btn-ghost" onclick="resetLogs()">Limpiar</button>
-        </div>
-      </div>
-
-      <div class="output-wrap" id="log-output" style="display:none">
-        <div class="output-header">
-          <span class="output-label">Resultado</span>
-          <button class="close-output" onclick="closeOutput('log-output')">✕</button>
-        </div>
-        <pre class="output-block" id="log-output-text"></pre>
-      </div>
-    </section>
-
   </main>
 
-  <div class="modal-overlay" id="confirm-modal" style="display:none">
-    <div class="modal-box">
-      <div class="modal-header">
-        <span class="modal-icon">⚠</span>
-        <span class="modal-title">Confirmar ejecución</span>
-      </div>
+  <script src="auth.js"></script>
+  <script>
+    if (getUser()) window.location.href = 'dashboard.html';
 
-      <p class="modal-body">Se enviará el siguiente comando al servidor:</p>
+    const tabs = document.querySelectorAll('.tab');
+    const forms = {
+      login: document.getElementById('loginForm'),
+      register: document.getElementById('registerForm')
+    };
+    const messageBox = document.getElementById('messageBox');
 
-      <div class="modal-cmd-wrap">
-        <span class="cmd-prefix">$</span>
-        <code class="modal-cmd" id="modal-cmd-text"></code>
-      </div>
+    function showMessage(text, type = 'error') {
+      messageBox.textContent = text;
+      messageBox.className = `message show ${type}`;
+    }
 
-      <div class="modal-btns">
-        <button class="btn-danger" id="modal-confirm-btn">Ejecutar</button>
-        <button class="btn-ghost" onclick="closeModal()">Cancelar</button>
-      </div>
-    </div>
-  </div>
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        Object.values(forms).forEach(f => f.classList.remove('active'));
+        tab.classList.add('active');
+        forms[tab.dataset.tab].classList.add('active');
+        messageBox.className = 'message';
+        messageBox.textContent = '';
+      });
+    });
 
-  <script src="app.js"></script>
+    forms.login.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const result = loginWithCredentials(
+        document.getElementById('loginEmail').value,
+        document.getElementById('loginPassword').value
+      );
+
+      if (!result.ok) return showMessage(result.message);
+      window.location.href = 'dashboard.html';
+    });
+
+    forms.register.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const result = registerUser({
+        name: document.getElementById('registerName').value,
+        email: document.getElementById('registerEmail').value,
+        password: document.getElementById('registerPassword').value
+      });
+
+      if (!result.ok) return showMessage(result.message);
+      showMessage('Cuenta creada correctamente. Entrando al panel…', 'ok');
+      setTimeout(() => window.location.href = 'dashboard.html', 600);
+    });
+
+    document.getElementById('googleLoginBtn').addEventListener('click', () => {
+      fakeGoogleLogin('dashboard.html');
+    });
+  </script>
 </body>
 </html>

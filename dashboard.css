@@ -1,0 +1,23 @@
+/* ====== Solo para la vista Mis Aplicaciones ====== */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin: 24px 0;
+}
+.card {
+  background: var(--panel-bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px;
+  transition: transform .2s, border-color .2s;
+}
+.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+.card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.card h3 { font-size: 16px; color: var(--text-strong); }
+.card-desc { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.card-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.status { font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 20px; }
+.status-on { background: var(--success-bg); color: var(--success); }
+.status-off { background: var(--off-bg); color: var(--muted); }
