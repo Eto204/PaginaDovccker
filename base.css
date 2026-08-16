@@ -64,7 +64,15 @@ body {
   z-index: 10;
 }
 .brand { display: flex; align-items: center; gap: 10px; }
-.logo { font-size: 28px; }
+.logo {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: var(--accent-ink);
+  background: var(--accent);
+  padding: 5px 8px;
+  border-radius: 8px;
+}
 .brand h1 { font-size: 20px; color: var(--accent); font-weight: 700; }
 .user { display: flex; align-items: center; gap: 12px; }
 .user-name { font-size: 14px; color: var(--muted); }

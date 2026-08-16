@@ -69,7 +69,10 @@ body {
   background: #0f172a;
   border: 1px solid #334155;
   border-radius: 18px;
-  font-size: 36px;
+  font-size: 20px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #38bdf8;
 }
 .login-brand h1 {
   color: #38bdf8;

@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Ver Registros — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
-  <link rel="stylesheet" href="logs.css" />
+  <link rel="stylesheet" href="registros.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="logo">🐳</span>
+      <span class="logo">PD</span>
       <h1>Panel Docker</h1>
     </div>
     <div class="user">
@@ -23,10 +23,10 @@
   <div class="layout">
     <aside class="sidebar">
       <nav>
-        <a href="dashboard.html" class="nav-item">📦 Perfiles</a>
-        <a href="build.html" class="nav-item">🧑‍💻 Crear Perfil</a>
-        <a href="logs.html" class="nav-item active">📜 Ver Registros</a>
-        <a href="settings.html" class="nav-item">⚙️ Ajustes</a>
+        <a href="perfiles.html" class="nav-item">Perfiles</a>
+        <a href="crear-perfil.html" class="nav-item">Crear Perfil</a>
+        <a href="registros.html" class="nav-item active">Ver Registros</a>
+        <a href="ajustes.html" class="nav-item">Ajustes</a>
       </nav>
       <div class="profile-box">
         <p class="profile-label">Perfil activo</p>
@@ -37,7 +37,7 @@
 
     <main class="content">
       <section class="hero">
-        <h2>📜 Bitácora de administración</h2>
+        <h2>Bitácora de administración</h2>
         <p class="subtitle">Cada perfil creado o eliminado queda registrado aquí, con fecha y hora reales.</p>
       </section>
 
@@ -53,9 +53,9 @@
 
   <div id="toastContainer"></div>
 
-  <script src="app-config.js"></script>
-  <script src="auth.js"></script>
-  <script src="app-data.js"></script>
+  <script src="configuracion.js"></script>
+  <script src="sesion.js"></script>
+  <script src="utilidades.js"></script>
   <script>
     requireAuth('index.html');
     paintUserInTopbar();
@@ -72,7 +72,7 @@
         if (!data.ok) throw new Error(data.message);
         renderLogs(data.logs);
       } catch (err) {
-        logsBox.innerHTML = '<p>⚠️ No se pudo conectar con el backend.</p>';
+        logsBox.innerHTML = '<p>No se pudo conectar con el backend.</p>';
       }
     }
 

@@ -1,108 +1,97 @@
-# 🐳 Panel Docker
+# Panel Docker
 
-Panel web para administrar perfiles en la PC compartida del proyecto (alumno / maestro / admin). Esta carpeta es **solo el frontend** — el backend (que crea los perfiles reales y las imágenes) ya corre por separado en esa misma PC, en el **puerto 8000**.
+Panel web para administrar perfiles en la PC compartida del proyecto (alumno, maestro, admin). Esta carpeta es solo el frontend. El backend que crea los perfiles reales y las imágenes ya corre por separado en esa misma PC, en el puerto 8000.
 
----
+## Vistas
 
-## ✨ Vistas
+- index.html — acceso al panel
+- perfiles.html — lista los perfiles existentes
+- crear-perfil.html — formulario para dar de alta un perfil nuevo
+- registros.html — bitácora de actividad
+- ajustes.html — tema, notificaciones y token de administrador
 
-- 🔐 `index.html` — acceso al panel
-- 📦 `dashboard.html` — lista los perfiles existentes
-- 🧑‍💻 `build.html` — formulario para crear un perfil nuevo
-- 📜 `logs.html` — registro de actividad
-- ⚙️ `settings.html` — tema, notificaciones y token de administrador
+## Tecnologías
 
----
+HTML5, CSS3 (variables CSS) y JavaScript sin frameworks ni build step. Son archivos estáticos.
 
-## 🧱 Tecnologías
-
-HTML5, CSS3 (variables CSS) y JavaScript vanilla. Sin frameworks, sin build step — son archivos estáticos.
-
----
-
-## 📂 Estructura
+## Estructura
 
 ```
-├── index.html
-├── dashboard.html
-├── build.html
-├── logs.html
-├── settings.html
-├── app-config.js      # ⚠️ URL del backend — lo único que normalmente hay que tocar
-├── auth.js             # Sesión del panel (login/logout)
-├── app-data.js          # Utilidades compartidas
-└── *.css
+index.html
+perfiles.html
+perfiles.css
+crear-perfil.html
+crear-perfil.css
+registros.html
+registros.css
+ajustes.html
+ajustes.css
+acceso.css          estilos exclusivos de la pantalla de acceso
+base.css             estilos compartidos entre todas las vistas internas
+configuracion.js      URL del backend, lo único que normalmente hay que tocar
+sesion.js              sesión del panel (login, logout, tema, notificaciones)
+utilidades.js           funciones pequeñas compartidas (por ejemplo escapeHtml)
 ```
 
----
-
-## 🚀 Cómo correrlo
+## Cómo correrlo
 
 Son archivos estáticos, cualquier servidor sirve. Desde esta carpeta:
 
-```bash
+```
 python3 -m http.server 8080
 ```
 
-Abre `http://localhost:8080/index.html`.
+Abre http://localhost:8080/index.html
 
-(También puedes abrir `index.html` directo con doble clic si no necesitas probar las llamadas al backend desde otra máquina.)
+También se puede abrir index.html directo con doble clic si no se necesita probar las llamadas al backend desde otra máquina.
 
----
+## Conexión con el backend (puerto 8000)
 
-## 🔌 Conexión con el backend (puerto 8000)
+Toda la comunicación con el backend pasa por un solo archivo: configuracion.js
 
-Toda la comunicación con el backend pasa por un solo archivo:
-
-**`app-config.js`**
-```js
+```
 const API_BASE = 'http://localhost:8000';
 ```
 
-- Si abres el panel **en la misma PC** donde corre el backend → déjalo así.
-- Si lo abres **desde otra PC** de la red → cambia `localhost` por la IP real de esa máquina.
+Si se abre el panel en la misma PC donde corre el backend, se deja así. Si se abre desde otra PC de la red, se cambia "localhost" por la IP real de esa máquina.
 
-### ⚠️ Pendiente: ajustar las rutas exactas
+### Rutas del backend — pendientes de confirmar
 
-El frontend llama a estos endpoints como **ejemplo/plantilla** — hay que confirmarlos contra el backend real del proyecto y ajustarlos si los nombres, métodos o campos son distintos:
+El frontend llama a estos endpoints a manera de ejemplo. Hay que confirmarlos contra el backend real del proyecto y ajustarlos si los nombres, métodos o campos son distintos.
 
-| Vista | Dónde está en el código | Llamada actual (ejemplo) | Qué se espera que haga |
-|---|---|---|---|
-| `dashboard.html` | dentro del `<script>`, función `loadProfiles()` | `GET ${API_BASE}/api/profiles` | Devolver la lista de perfiles. El código espera algo como: `{ "ok": true, "profiles": [{ "username": "...", "role": "...", "status": "...", "homeSize": "..." }] }` |
-| `build.html` | dentro del `<script>`, evento del botón `buildBtn` | `POST ${API_BASE}/api/profiles`<br>body: `{ "username": "...", "role": "..." }`<br>header: `X-Admin-Token: <token>` | Crear un perfil y devolver algo como: `{ "ok": true, "username": "...", "tempPassword": "...", "role": "..." }` |
-| `logs.html` | dentro del `<script>`, función `loadLogs()` | `GET ${API_BASE}/api/logs` | Devolver el historial: `{ "ok": true, "logs": [{ "time": "ISO-8601", "text": "...", "type": "ok" \| "warn" \| null }] }` |
+Vista: perfiles.html
+Dónde: dentro del script, función loadProfiles
+Llamada actual: GET API_BASE/api/profiles
+Qué se espera: devolver la lista de perfiles, algo como
+{ "ok": true, "profiles": [{ "username": "...", "role": "...", "status": "...", "homeSize": "..." }] }
 
-**Cómo ajustarlo**: si el backend real usa, por ejemplo, `GET /perfiles` en vez de `GET /api/profiles`, o devuelve el JSON con otros nombres de campos (`nombre` en vez de `username`), solo hay que:
+Vista: crear-perfil.html
+Dónde: dentro del script, evento del botón buildBtn
+Llamada actual: POST API_BASE/api/profiles, con body { "username": "...", "role": "..." } y encabezado X-Admin-Token
+Qué se espera: crear un perfil y devolver algo como
+{ "ok": true, "username": "...", "tempPassword": "...", "role": "..." }
 
-1. Cambiar la URL dentro del `fetch(...)` en el `<script>` de esa vista.
-2. Ajustar qué propiedades del JSON de respuesta se leen (por ejemplo `data.profiles` → `data.perfiles`).
+Vista: registros.html
+Dónde: dentro del script, función loadLogs
+Llamada actual: GET API_BASE/api/logs
+Qué se espera: devolver el historial, algo como
+{ "ok": true, "logs": [{ "time": "...", "text": "...", "type": "ok, warn o vacío" }] }
 
-Todo eso vive en un solo bloque `<script>` por archivo, es fácil de ubicar buscando la palabra `fetch`.
+Cómo ajustarlo: si el backend real usa, por ejemplo, GET /perfiles en vez de GET /api/profiles, o devuelve el JSON con otros nombres de campos, solo hay que cambiar la URL dentro del fetch de esa vista y los nombres de propiedad que se leen de la respuesta. Todo eso vive en un solo bloque de script por archivo, se ubica fácil buscando la palabra fetch.
 
 ### Token de administrador
 
-`build.html` manda un header `X-Admin-Token` al crear un perfil. Ese valor se escribe una vez en **Ajustes → Backend de perfiles** (o directo en el formulario de "Crear Perfil") y se guarda en `localStorage` de ese navegador. Si el backend real no usa un token así, se puede quitar ese header del `fetch` en `build.html`.
+crear-perfil.html manda un encabezado X-Admin-Token al crear un perfil. Ese valor se escribe una vez en Ajustes, dentro de "Backend de perfiles" (o directo en el formulario de Crear Perfil), y se guarda en el navegador para no pedirlo cada vez. Si el backend real no usa un token así, se puede quitar ese encabezado del fetch en crear-perfil.html.
 
----
+## Datos guardados en el navegador
 
-## 💾 Preferencias guardadas en el navegador (`localStorage`)
+dp_user — sesión del panel
+dp_admin_token — token para crear o borrar perfiles
+dp_light_theme — tema claro u oscuro
+dp_notifications — notificaciones activas o inactivas
 
-| Clave | Contenido |
-|---|---|
-| `dp_user` | Sesión del panel (login) |
-| `dp_admin_token` | Token para crear/borrar perfiles |
-| `dp_light_theme` | Tema claro/oscuro |
-| `dp_notifications` | Notificaciones activas/inactivas |
+## Notas
 
----
+Si perfiles.html o registros.html muestran que no se pudo conectar con el backend, revisar que el backend esté corriendo y que la dirección en configuracion.js apunte al puerto correcto.
 
-## ⚠️ Notas
-
-- Si `dashboard.html` o `logs.html` muestran "No se pudo conectar con el backend", revisa que el backend esté corriendo y que `API_BASE` en `app-config.js` apunte al puerto correcto.
-- Si la respuesta llega pero la página no muestra nada, es señal de que los nombres de los campos del JSON no coinciden con lo que el código espera (ver tabla de arriba).
-
----
-
-## 📄 Licencia
-
-_Agregar aquí la licencia del proyecto (MIT, propietaria, etc.)._
+Si la respuesta llega pero la página no muestra nada, es señal de que los nombres de los campos del JSON no coinciden con lo que el código espera.

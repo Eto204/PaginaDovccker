@@ -1,5 +1,5 @@
 /* ============================================
-   app-config.js — Conexión con el backend
+   configuracion.js — Conexión con el backend
    ============================================
    El backend ya corre en la PC del proyecto, en el
    puerto 8000. Aquí solo se define la URL base.

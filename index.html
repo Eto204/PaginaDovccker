@@ -4,14 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acceso — Panel Docker</title>
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="acceso.css" />
 </head>
 <body>
   <main class="login-screen">
     <section class="login-shell">
       <div class="login-info">
         <div class="login-brand">
-          <span class="login-logo">🐳</span>
+          <span class="login-logo">PD</span>
           <div>
             <h1>Panel Docker</h1>
             <p>Administra tus contenedores sin escribir comandos.</p>
@@ -19,9 +19,9 @@
         </div>
 
         <div class="features">
-          <p>✅ Tu nombre se muestra automáticamente en el panel.</p>
-          <p>✅ Puedes iniciar sesión, registrarte o entrar con Google.</p>
-          <p>✅ La sesión se guarda en este navegador con localStorage.</p>
+          <p>Tu nombre se muestra automáticamente en el panel.</p>
+          <p>Puedes iniciar sesión, registrarte o entrar con Google.</p>
+          <p>La sesión se guarda en este navegador con localStorage.</p>
         </div>
       </div>
 
@@ -85,9 +85,9 @@
     </section>
   </main>
 
-  <script src="auth.js"></script>
+  <script src="sesion.js"></script>
   <script>
-    if (getUser()) window.location.href = 'dashboard.html';
+    if (getUser()) window.location.href = 'perfiles.html';
 
     const tabs = document.querySelectorAll('.tab');
     const forms = {
@@ -120,7 +120,7 @@
       );
 
       if (!result.ok) return showMessage(result.message);
-      window.location.href = 'dashboard.html';
+      window.location.href = 'perfiles.html';
     });
 
     forms.register.addEventListener('submit', (e) => {
@@ -133,11 +133,11 @@
 
       if (!result.ok) return showMessage(result.message);
       showMessage('Cuenta creada correctamente. Entrando al panel…', 'ok');
-      setTimeout(() => window.location.href = 'dashboard.html', 600);
+      setTimeout(() => window.location.href = 'perfiles.html', 600);
     });
 
     document.getElementById('googleLoginBtn').addEventListener('click', () => {
-      fakeGoogleLogin('dashboard.html');
+      fakeGoogleLogin('perfiles.html');
     });
   </script>
 </body>

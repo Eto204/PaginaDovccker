@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Perfiles — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
-  <link rel="stylesheet" href="dashboard.css" />
+  <link rel="stylesheet" href="perfiles.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="logo">🐳</span>
+      <span class="logo">PD</span>
       <h1>Panel Docker</h1>
     </div>
     <div class="user">
@@ -23,10 +23,10 @@
   <div class="layout">
     <aside class="sidebar">
       <nav>
-        <a href="dashboard.html" class="nav-item active">📦 Perfiles</a>
-        <a href="build.html" class="nav-item">🧑‍💻 Crear Perfil</a>
-        <a href="logs.html" class="nav-item">📜 Ver Registros</a>
-        <a href="settings.html" class="nav-item">⚙️ Ajustes</a>
+        <a href="perfiles.html" class="nav-item active">Perfiles</a>
+        <a href="crear-perfil.html" class="nav-item">Crear Perfil</a>
+        <a href="registros.html" class="nav-item">Ver Registros</a>
+        <a href="ajustes.html" class="nav-item">Ajustes</a>
       </nav>
       <div class="profile-box">
         <p class="profile-label">Perfil activo</p>
@@ -51,9 +51,9 @@
 
   <div id="toastContainer"></div>
 
-  <script src="app-config.js"></script>
-  <script src="auth.js"></script>
-  <script src="app-data.js"></script>
+  <script src="configuracion.js"></script>
+  <script src="sesion.js"></script>
+  <script src="utilidades.js"></script>
   <script>
     requireAuth('index.html');
     paintUserInTopbar();
@@ -71,7 +71,7 @@
         if (!data.ok) throw new Error(data.message);
         renderProfiles(data.profiles);
       } catch (err) {
-        cardsWrap.innerHTML = `<p class="subtitle">⚠️ No se pudo conectar con el backend. ¿Está corriendo <code>node server.js</code>?</p>`;
+        cardsWrap.innerHTML = `<p class="subtitle">No se pudo conectar con el backend. Revisa que esté corriendo y que la dirección en configuracion.js sea la correcta.</p>`;
       }
     }
 
@@ -94,7 +94,7 @@
           </div>
           <p class="card-desc">${ROLE_LABEL[p.role] || p.role} · uso de disco: ${escapeHtml(p.homeSize)}</p>
           <div class="card-actions">
-            <a class="btn btn-ghost" href="logs.html?app=${encodeURIComponent(p.username)}">📜 Ver logs</a>
+            <a class="btn btn-ghost" href="registros.html?app=${encodeURIComponent(p.username)}">Ver logs</a>
           </div>
         `;
         cardsWrap.appendChild(card);

@@ -5,12 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Crear Perfil — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
-  <link rel="stylesheet" href="build.css" />
+  <link rel="stylesheet" href="crear-perfil.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <span class="logo">🐳</span>
+      <span class="logo">PD</span>
       <h1>Panel Docker</h1>
     </div>
     <div class="user">
@@ -23,10 +23,10 @@
   <div class="layout">
     <aside class="sidebar">
       <nav>
-        <a href="dashboard.html" class="nav-item">📦 Perfiles</a>
-        <a href="build.html" class="nav-item active">🧑‍💻 Crear Perfil</a>
-        <a href="logs.html" class="nav-item">📜 Ver Registros</a>
-        <a href="settings.html" class="nav-item">⚙️ Ajustes</a>
+        <a href="perfiles.html" class="nav-item">Perfiles</a>
+        <a href="crear-perfil.html" class="nav-item active">Crear Perfil</a>
+        <a href="registros.html" class="nav-item">Ver Registros</a>
+        <a href="ajustes.html" class="nav-item">Ajustes</a>
       </nav>
       <div class="profile-box">
         <p class="profile-label">Perfil activo</p>
@@ -37,7 +37,7 @@
 
     <main class="content">
       <section class="hero">
-        <h2>🧑‍💻 Crear un perfil nuevo</h2>
+        <h2>Crear un perfil nuevo</h2>
         <p class="subtitle">Da de alta un usuario Linux real con su propio entorno aislado y persistente (Distrobox).</p>
       </section>
 
@@ -63,7 +63,7 @@
             <span class="preview-label">Se ejecutará en el servidor:</span>
             <code>useradd -m -G <b id="previewRole">alumnos</b> <b id="previewName">alumno7</b> &amp;&amp; distrobox create --name mi-entorno</code>
           </div>
-          <button type="button" class="btn btn-primary btn-large" id="buildBtn">🚀 Crear perfil</button>
+          <button type="button" class="btn btn-primary btn-large" id="buildBtn">Crear perfil</button>
         </form>
       </section>
 
@@ -80,9 +80,9 @@
 
   <div id="toastContainer"></div>
 
-  <script src="app-config.js"></script>
-  <script src="auth.js"></script>
-  <script src="app-data.js"></script>
+  <script src="configuracion.js"></script>
+  <script src="sesion.js"></script>
+  <script src="utilidades.js"></script>
   <script>
     requireAuth('index.html');
     paintUserInTopbar();
@@ -124,15 +124,15 @@
       const role = appRole.value;
       const token = adminToken.value.trim();
 
-      if (!username) return notify('⚠️ Escribe un nombre de usuario', 'warn');
-      if (!token) return notify('⚠️ Falta el token de administrador', 'warn');
+      if (!username) return notify('Escribe un nombre de usuario', 'warn');
+      if (!token) return notify('Falta el token de administrador', 'warn');
 
       localStorage.setItem('dp_admin_token', token);
 
       buildPanel.style.display = 'block';
       buildLog.innerHTML = '';
       buildBtn.disabled = true;
-      buildBtn.textContent = '⏳ Creando…';
+      buildBtn.textContent = 'Creando…';
       addBuildLine(`Creando usuario Linux "${username}" (${role})…`, null);
 
       try {
@@ -147,21 +147,21 @@
         const data = await res.json();
 
         if (!data.ok) {
-          addBuildLine(`❌ ${data.message}`, 'warn');
-          notify(`❌ ${data.message}`, 'warn');
+          addBuildLine(`Error: ${data.message}`, 'warn');
+          notify(`Error: ${data.message}`, 'warn');
         } else {
-          addBuildLine(`✅ Usuario creado`, 'ok');
-          addBuildLine(`📦 Entorno "mi-entorno" (Distrobox) listo y aislado`, 'ok');
-          addBuildLine(`🔑 Contraseña temporal: <b>${data.tempPassword}</b> (debe cambiarla al entrar)`, 'ok');
-          notify(`✅ Perfil "${username}" creado`, 'ok');
+          addBuildLine(`Usuario creado`, 'ok');
+          addBuildLine(`Entorno "mi-entorno" (Distrobox) listo y aislado`, 'ok');
+          addBuildLine(`Contraseña temporal: <b>${data.tempPassword}</b> (debe cambiarla al entrar)`, 'ok');
+          notify(`Perfil "${username}" creado`, 'ok');
         }
       } catch (err) {
-        addBuildLine(`❌ No se pudo conectar con el backend (¿está corriendo?)`, 'warn');
-        notify('❌ No se pudo conectar con el backend', 'warn');
+        addBuildLine(`No se pudo conectar con el backend`, 'warn');
+        notify('No se pudo conectar con el backend', 'warn');
       }
 
       buildBtn.disabled = false;
-      buildBtn.textContent = '🚀 Crear perfil';
+      buildBtn.textContent = 'Crear perfil';
     });
   </script>
 </body>

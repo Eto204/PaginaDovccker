@@ -1,5 +1,5 @@
 /* ============================================
-   auth.js — sesión local + login/registro/Google mock
+   sesion.js — sesión local + login/registro/Google mock
    Demo sin backend real. Guarda usuarios y sesión
    en localStorage para que el panel se vea funcional.
    ============================================ */
