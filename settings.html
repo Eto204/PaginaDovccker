@@ -80,6 +80,18 @@
       </section>
 
       <section class="panel">
+        <h2 class="panel-subtitle">Backend de perfiles</h2>
+        <p class="setting-desc" style="margin-bottom: 10px;">Token de administrador para crear/borrar perfiles reales en el servidor (debe coincidir con <code>PANEL_ADMIN_TOKEN</code> en <code>server.js</code>).</p>
+        <div class="form" style="max-width:360px;">
+          <label>
+            Token
+            <input type="password" id="adminTokenSetting" placeholder="Token del backend" />
+          </label>
+          <button class="btn btn-primary" id="saveTokenBtn" style="align-self:flex-start;">Guardar</button>
+        </div>
+      </section>
+
+      <section class="panel">
         <h2 class="panel-subtitle">Sesión</h2>
         <p class="setting-desc" style="margin-bottom: 14px;">Cierra tu sesión en este dispositivo.</p>
         <button class="btn btn-danger" data-logout>🚪 Cerrar sesión</button>
@@ -123,6 +135,14 @@
     notifToggle.addEventListener('change', () => {
       setNotificationsEnabled(notifToggle.checked);
       if (notifToggle.checked) notify('🔔 Notificaciones activadas', 'ok');
+    });
+
+    // Token de administrador del backend de perfiles
+    const adminTokenSetting = document.getElementById('adminTokenSetting');
+    adminTokenSetting.value = localStorage.getItem('dp_admin_token') || '';
+    document.getElementById('saveTokenBtn').addEventListener('click', () => {
+      localStorage.setItem('dp_admin_token', adminTokenSetting.value.trim());
+      notify('🔑 Token guardado en este navegador', 'ok');
     });
   </script>
 </body>

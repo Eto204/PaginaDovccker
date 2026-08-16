@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Construir Imagen — Panel Docker</title>
+  <title>Crear Perfil — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
   <link rel="stylesheet" href="build.css" />
 </head>
@@ -23,59 +23,64 @@
   <div class="layout">
     <aside class="sidebar">
       <nav>
-        <a href="dashboard.html" class="nav-item">📦 Mis Aplicaciones</a>
-        <a href="build.html" class="nav-item active">🏗️ Construir Imagen</a>
+        <a href="dashboard.html" class="nav-item">📦 Perfiles</a>
+        <a href="build.html" class="nav-item active">🧑‍💻 Crear Perfil</a>
         <a href="logs.html" class="nav-item">📜 Ver Registros</a>
         <a href="settings.html" class="nav-item">⚙️ Ajustes</a>
       </nav>
       <div class="profile-box">
         <p class="profile-label">Perfil activo</p>
         <p class="profile-name">Juan Pérez</p>
-        <p class="profile-hint">Solo ves tus propios contenedores</p>
+        <p class="profile-hint">Solo el admin puede crear perfiles</p>
       </div>
     </aside>
 
     <main class="content">
       <section class="hero">
-        <h2>🏗️ Construir una imagen</h2>
-        <p class="subtitle">Rellena los campos y nosotros armamos el comando por ti.</p>
+        <h2>🧑‍💻 Crear un perfil nuevo</h2>
+        <p class="subtitle">Da de alta un usuario Linux real con su propio entorno aislado y persistente (Distrobox).</p>
       </section>
 
       <section class="panel">
         <form class="form" id="buildForm">
           <label>
-            Nombre de la aplicación
-            <input type="text" id="appName" placeholder="ej: mi-pagina-web" />
+            Token de administrador
+            <input type="password" id="adminToken" placeholder="Token del backend (ver ajustes)" />
           </label>
           <label>
-            Carpeta del proyecto
-            <input type="text" id="appPath" placeholder="ej: /home/juan/mi-proyecto" />
+            Nombre de usuario
+            <input type="text" id="appName" placeholder="ej: alumno7" />
           </label>
           <label>
-            Versión (etiqueta)
-            <input type="text" id="appVersion" placeholder="ej: 1.0" />
+            Rol
+            <select id="appRole" class="log-select" style="margin-bottom:0;">
+              <option value="alumno">Alumno</option>
+              <option value="maestro">Maestro</option>
+              <option value="admin">Admin</option>
+            </select>
           </label>
           <div class="preview">
-            <span class="preview-label">Se ejecutará:</span>
-            <code>docker build -t <b id="previewName">mi-pagina-web</b>:<b id="previewVersion">1.0</b> <b id="previewPath">/home/juan/mi-proyecto</b></code>
+            <span class="preview-label">Se ejecutará en el servidor:</span>
+            <code>useradd -m -G <b id="previewRole">alumnos</b> <b id="previewName">alumno7</b> &amp;&amp; distrobox create --name mi-entorno</code>
           </div>
-          <button type="button" class="btn btn-primary btn-large" id="buildBtn">🚀 Construir ahora</button>
+          <button type="button" class="btn btn-primary btn-large" id="buildBtn">🚀 Crear perfil</button>
         </form>
       </section>
 
       <section class="panel" id="buildLogPanel" style="display:none;">
-        <h2>Progreso del build</h2>
+        <h2>Progreso</h2>
         <div class="logs" id="buildLog"></div>
       </section>
     </main>
   </div>
 
   <footer class="footer">
-    <p>Panel Docker Simple · Hecho para que cualquiera pueda usar Docker sin complicaciones</p>
+    <p>Panel Docker · Consola de administración de perfiles reales</p>
   </footer>
 
   <div id="toastContainer"></div>
 
+  <script src="app-config.js"></script>
   <script src="auth.js"></script>
   <script src="app-data.js"></script>
   <script>
@@ -84,22 +89,26 @@
     wireLogout('index.html');
     applyStoredTheme();
 
+    const adminToken = document.getElementById('adminToken');
     const appName = document.getElementById('appName');
-    const appPath = document.getElementById('appPath');
-    const appVersion = document.getElementById('appVersion');
+    const appRole = document.getElementById('appRole');
     const previewName = document.getElementById('previewName');
-    const previewVersion = document.getElementById('previewVersion');
-    const previewPath = document.getElementById('previewPath');
+    const previewRole = document.getElementById('previewRole');
     const buildPanel = document.getElementById('buildLogPanel');
     const buildLog = document.getElementById('buildLog');
     const buildBtn = document.getElementById('buildBtn');
 
+    const ROLE_GROUP = { alumno: 'alumnos', maestro: 'maestros', admin: 'admins' };
+
+    // Recuerda el token en este navegador para no escribirlo cada vez
+    adminToken.value = localStorage.getItem('dp_admin_token') || '';
+
     function updatePreview() {
-      previewName.textContent = appName.value.trim() || 'mi-pagina-web';
-      previewVersion.textContent = appVersion.value.trim() || '1.0';
-      previewPath.textContent = appPath.value.trim() || '/home/juan/mi-proyecto';
+      previewName.textContent = appName.value.trim() || 'alumno7';
+      previewRole.textContent = ROLE_GROUP[appRole.value];
     }
-    [appName, appPath, appVersion].forEach(el => el.addEventListener('input', updatePreview));
+    [appName, appRole].forEach(el => el.addEventListener('input', updatePreview));
+    updatePreview();
 
     function addBuildLine(text, type) {
       const p = document.createElement('p');
@@ -110,32 +119,49 @@
       buildLog.scrollTop = buildLog.scrollHeight;
     }
 
-    buildBtn.addEventListener('click', () => {
-      const name = appName.value.trim() || 'mi-pagina-web';
-      const path = appPath.value.trim() || '/home/juan/mi-proyecto';
-      const version = appVersion.value.trim() || '1.0';
+    buildBtn.addEventListener('click', async () => {
+      const username = appName.value.trim();
+      const role = appRole.value;
+      const token = adminToken.value.trim();
+
+      if (!username) return notify('⚠️ Escribe un nombre de usuario', 'warn');
+      if (!token) return notify('⚠️ Falta el token de administrador', 'warn');
+
+      localStorage.setItem('dp_admin_token', token);
 
       buildPanel.style.display = 'block';
       buildLog.innerHTML = '';
       buildBtn.disabled = true;
-      buildBtn.textContent = '⏳ Construyendo…';
+      buildBtn.textContent = '⏳ Creando…';
+      addBuildLine(`Creando usuario Linux "${username}" (${role})…`, null);
 
-      const steps = [
-        `Enviando contexto de build desde ${path}`,
-        `Resolviendo dependencias`,
-        `Construyendo capas de la imagen`,
-        `Etiquetando como ${name}:${version}`,
-      ];
-      steps.forEach((s, i) => setTimeout(() => addBuildLine(s, null), i * 500));
+      try {
+        const res = await fetch(`${API_BASE}/api/profiles`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Admin-Token': token
+          },
+          body: JSON.stringify({ username, role })
+        });
+        const data = await res.json();
 
-      setTimeout(() => {
-        addBuildLine(`✅ Imagen ${name}:${version} construida correctamente`, 'ok');
-        const key = addApp(name, `Imagen personalizada · v${version}`);
-        addBuildLine(`📦 "${name}" agregada a Mis Aplicaciones y encendida`, 'ok');
-        notify(`✅ ${name} construida y desplegada`, 'ok');
-        buildBtn.disabled = false;
-        buildBtn.textContent = '🚀 Construir ahora';
-      }, steps.length * 500 + 400);
+        if (!data.ok) {
+          addBuildLine(`❌ ${data.message}`, 'warn');
+          notify(`❌ ${data.message}`, 'warn');
+        } else {
+          addBuildLine(`✅ Usuario creado`, 'ok');
+          addBuildLine(`📦 Entorno "mi-entorno" (Distrobox) listo y aislado`, 'ok');
+          addBuildLine(`🔑 Contraseña temporal: <b>${data.tempPassword}</b> (debe cambiarla al entrar)`, 'ok');
+          notify(`✅ Perfil "${username}" creado`, 'ok');
+        }
+      } catch (err) {
+        addBuildLine(`❌ No se pudo conectar con el backend (¿está corriendo?)`, 'warn');
+        notify('❌ No se pudo conectar con el backend', 'warn');
+      }
+
+      buildBtn.disabled = false;
+      buildBtn.textContent = '🚀 Crear perfil';
     });
   </script>
 </body>

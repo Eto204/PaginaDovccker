@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Mis Aplicaciones — Panel Docker</title>
+  <title>Perfiles — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
   <link rel="stylesheet" href="dashboard.css" />
 </head>
@@ -23,22 +23,22 @@
   <div class="layout">
     <aside class="sidebar">
       <nav>
-        <a href="dashboard.html" class="nav-item active">📦 Mis Aplicaciones</a>
-        <a href="build.html" class="nav-item">🏗️ Construir Imagen</a>
+        <a href="dashboard.html" class="nav-item active">📦 Perfiles</a>
+        <a href="build.html" class="nav-item">🧑‍💻 Crear Perfil</a>
         <a href="logs.html" class="nav-item">📜 Ver Registros</a>
         <a href="settings.html" class="nav-item">⚙️ Ajustes</a>
       </nav>
       <div class="profile-box">
         <p class="profile-label">Perfil activo</p>
         <p class="profile-name">Juan Pérez</p>
-        <p class="profile-hint">Solo ves tus propios contenedores</p>
+        <p class="profile-hint">Perfiles reales del servidor</p>
       </div>
     </aside>
 
     <main class="content">
       <section class="hero">
-        <h2>Tus aplicaciones</h2>
-        <p class="subtitle">Enciende, apaga y revisa tus programas sin escribir comandos.</p>
+        <h2>Perfiles del servidor</h2>
+        <p class="subtitle">Usuarios reales y el estado de su entorno aislado (Distrobox).</p>
       </section>
 
       <section class="cards" id="cardsWrap"></section>
@@ -46,11 +46,12 @@
   </div>
 
   <footer class="footer">
-    <p>Panel Docker Simple · Hecho para que cualquiera pueda usar Docker sin complicaciones</p>
+    <p>Panel Docker · Consola de administración de perfiles reales</p>
   </footer>
 
   <div id="toastContainer"></div>
 
+  <script src="app-config.js"></script>
   <script src="auth.js"></script>
   <script src="app-data.js"></script>
   <script>
@@ -59,23 +60,48 @@
     wireLogout('index.html');
     applyStoredTheme();
 
-    // Dibuja una tarjeta por cada app guardada (incluye las que construyas en "Construir Imagen")
+    const ROLE_LABEL = { alumnos: 'Alumno', maestros: 'Maestro', admins: 'Admin' };
     const cardsWrap = document.getElementById('cardsWrap');
-    getApps().forEach(app => {
-      const card = document.createElement('article');
-      card.className = 'card';
-      card.dataset.app = app.key;
-      card.innerHTML = `
-        <div class="card-head">
-          <h3>${escapeHtml(app.name)}</h3>
-          <span class="status"></span>
-        </div>
-        <p class="card-desc">${escapeHtml(app.desc)}</p>
-        <div class="card-actions"></div>
-      `;
-      cardsWrap.appendChild(card);
-      renderCardActions(card, getAppState(app.key) || 'off');
-    });
+
+    async function loadProfiles() {
+      cardsWrap.innerHTML = '<p class="subtitle">Cargando perfiles…</p>';
+      try {
+        const res = await fetch(`${API_BASE}/api/profiles`);
+        const data = await res.json();
+        if (!data.ok) throw new Error(data.message);
+        renderProfiles(data.profiles);
+      } catch (err) {
+        cardsWrap.innerHTML = `<p class="subtitle">⚠️ No se pudo conectar con el backend. ¿Está corriendo <code>node server.js</code>?</p>`;
+      }
+    }
+
+    function renderProfiles(profiles) {
+      cardsWrap.innerHTML = '';
+      if (profiles.length === 0) {
+        cardsWrap.innerHTML = '<p class="subtitle">Aún no hay perfiles. Ve a "Crear Perfil" para dar de alta el primero.</p>';
+        return;
+      }
+      profiles.forEach(p => {
+        const card = document.createElement('article');
+        card.className = 'card';
+        const isReady = p.status === 'creado';
+        card.innerHTML = `
+          <div class="card-head">
+            <h3>${escapeHtml(p.username)}</h3>
+            <span class="status ${isReady ? 'status-on' : 'status-off'}">
+              ${isReady ? '● Entorno listo' : '● Sin entorno'}
+            </span>
+          </div>
+          <p class="card-desc">${ROLE_LABEL[p.role] || p.role} · uso de disco: ${escapeHtml(p.homeSize)}</p>
+          <div class="card-actions">
+            <a class="btn btn-ghost" href="logs.html?app=${encodeURIComponent(p.username)}">📜 Ver logs</a>
+          </div>
+        `;
+        cardsWrap.appendChild(card);
+      });
+    }
+
+    loadProfiles();
   </script>
 </body>
 </html>
