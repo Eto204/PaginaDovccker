@@ -1,179 +1,186 @@
 /* ============================================
-   sesion.js — sesión local + login/registro/Google mock
-   Demo sin backend real. Guarda usuarios y sesión
-   en localStorage para que el panel se vea funcional.
+   sesion.js -- sesion local + login/registro/Google (simulado)
+   ============================================
+   Esto sigue siendo una demo, todavia no hay
+   backend real para el login. Los usuarios y la
+   sesion se guardan en localStorage nomas para
+   que el panel se vea funcional mientras tanto.
    ============================================ */
 
-const AUTH_KEY = 'dp_user';
-const USERS_KEY = 'dp_users';
-const NOTIF_KEY = 'dp_notifications';
+const CLAVE_SESION = 'dp_user';
+const CLAVE_USUARIOS = 'dp_users';
+const CLAVE_NOTIF = 'dp_notifications';
 
-function getUser() {
-  const raw = localStorage.getItem(AUTH_KEY);
-  return raw ? JSON.parse(raw) : null;
+function obtenerUsuario() {
+  const datos = localStorage.getItem(CLAVE_SESION);
+  return datos ? JSON.parse(datos) : null;
 }
 
-function getUsers() {
-  return JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+function obtenerUsuarios() {
+  return JSON.parse(localStorage.getItem(CLAVE_USUARIOS) || '[]');
 }
 
-function saveUsers(users) {
-  localStorage.setItem(USERS_KEY, JSON.stringify(users));
+function guardarUsuarios(usuarios) {
+  localStorage.setItem(CLAVE_USUARIOS, JSON.stringify(usuarios));
 }
 
-function cleanEmail(email) {
-  return String(email || '').trim().toLowerCase();
+function limpiarCorreo(correo) {
+  return String(correo || '').trim().toLowerCase();
 }
 
-function getInitial(nameOrEmail) {
-  const value = String(nameOrEmail || 'U').trim();
-  return value.charAt(0).toUpperCase();
+function obtenerInicial(nombreOCorreo) {
+  const valor = String(nombreOCorreo || 'U').trim();
+  return valor.charAt(0).toUpperCase();
 }
 
-function createSession(user, redirectPage) {
-  localStorage.setItem(AUTH_KEY, JSON.stringify({
-    name: user.name,
-    initial: getInitial(user.name || user.email),
-    email: cleanEmail(user.email),
-    provider: user.provider || 'Correo'
+function crearSesion(usuario, paginaRedirigir) {
+  localStorage.setItem(CLAVE_SESION, JSON.stringify({
+    nombre: usuario.nombre,
+    inicial: obtenerInicial(usuario.nombre || usuario.correo),
+    correo: limpiarCorreo(usuario.correo),
+    proveedor: usuario.proveedor || 'Correo'
   }));
 
-  if (redirectPage) window.location.href = redirectPage;
+  if (paginaRedirigir) window.location.href = paginaRedirigir;
 }
 
-function registerUser({ name, email, password }) {
-  const cleanName = String(name || '').trim();
-  const cleanMail = cleanEmail(email);
-  const pass = String(password || '');
+function registrarUsuario({ nombre, correo, contrasena }) {
+  const nombreLimpio = String(nombre || '').trim();
+  const correoLimpio = limpiarCorreo(correo);
+  const pass = String(contrasena || '');
 
-  if (cleanName.length < 2) return { ok: false, message: 'Escribe tu nombre completo.' };
-  if (!cleanMail.includes('@')) return { ok: false, message: 'Escribe un correo válido.' };
-  if (pass.length < 6) return { ok: false, message: 'La contraseña debe tener mínimo 6 caracteres.' };
+  if (nombreLimpio.length < 2) return { ok: false, mensaje: 'Escribe tu nombre completo.' };
+  if (!correoLimpio.includes('@')) return { ok: false, mensaje: 'Escribe un correo valido.' };
+  if (pass.length < 6) return { ok: false, mensaje: 'La contraseña debe tener minimo 6 caracteres.' };
 
-  const users = getUsers();
-  if (users.some(u => cleanEmail(u.email) === cleanMail)) {
-    return { ok: false, message: 'Ese correo ya está registrado. Inicia sesión.' };
+  const usuarios = obtenerUsuarios();
+  if (usuarios.some(u => limpiarCorreo(u.correo) === correoLimpio)) {
+    return { ok: false, mensaje: 'Ese correo ya esta registrado. Inicia sesion.' };
   }
 
-  const user = { name: cleanName, email: cleanMail, password: pass, provider: 'Correo' };
-  users.push(user);
-  saveUsers(users);
-  createSession(user);
-  return { ok: true, user };
+  // ojo: aqui se guarda la contraseña tal cual, es demo
+  // nada mas, en un backend real esto va con hash
+  const nuevoUsuario = { nombre: nombreLimpio, correo: correoLimpio, contrasena: pass, proveedor: 'Correo' };
+  usuarios.push(nuevoUsuario);
+  guardarUsuarios(usuarios);
+  crearSesion(nuevoUsuario);
+  return { ok: true, usuario: nuevoUsuario };
 }
 
-function loginWithCredentials(email, password) {
-  const cleanMail = cleanEmail(email);
-  const pass = String(password || '');
-  const user = getUsers().find(u => cleanEmail(u.email) === cleanMail && u.password === pass);
+function iniciarSesion(correo, contrasena) {
+  const correoLimpio = limpiarCorreo(correo);
+  const pass = String(contrasena || '');
+  const usuario = obtenerUsuarios().find(u => limpiarCorreo(u.correo) === correoLimpio && u.contrasena === pass);
 
-  if (!user) {
-    return { ok: false, message: 'Correo o contraseña incorrectos. Si no tienes cuenta, regístrate.' };
+  if (!usuario) {
+    return { ok: false, mensaje: 'Correo o contraseña incorrectos. Si no tienes cuenta, registrate.' };
   }
 
-  createSession(user);
-  return { ok: true, user };
+  crearSesion(usuario);
+  return { ok: true, usuario };
 }
 
-// Simula Google: pregunta datos para que sí cambie el nombre en el panel.
-// En un backend real aquí iría OAuth y Google regresaría name/email.
-function fakeGoogleLogin(redirectPage) {
-  const name = prompt('Nombre de tu cuenta de Google:', 'Alejandro Estrada') || 'Usuario Google';
-  const email = prompt('Correo de Google:', 'alejandro@gmail.com') || 'usuario@gmail.com';
-  const user = {
-    name: name.trim(),
-    email: cleanEmail(email),
-    provider: 'Google'
+// Simula el login de Google nomas preguntando los
+// datos, asi si cambia el nombre en el panel.
+// En un backend real aqui iria OAuth de a de veras
+// y Google nos regresaria el nombre y el correo.
+function loginGoogleFalso(paginaRedirigir) {
+  const nombre = prompt('Nombre de tu cuenta de Google:', 'Alejandro Estrada') || 'Usuario Google';
+  const correo = prompt('Correo de Google:', 'alejandro@gmail.com') || 'usuario@gmail.com';
+  const usuario = {
+    nombre: nombre.trim(),
+    correo: limpiarCorreo(correo),
+    proveedor: 'Google'
   };
 
-  const users = getUsers();
-  const exists = users.find(u => cleanEmail(u.email) === user.email);
-  if (!exists) {
-    users.push({ ...user, password: null });
-    saveUsers(users);
+  const usuarios = obtenerUsuarios();
+  const yaExiste = usuarios.find(u => limpiarCorreo(u.correo) === usuario.correo);
+  if (!yaExiste) {
+    usuarios.push({ ...usuario, contrasena: null });
+    guardarUsuarios(usuarios);
   }
 
-  createSession(user, redirectPage);
+  crearSesion(usuario, paginaRedirigir);
 }
 
-function requireAuth(loginPage) {
-  if (!getUser()) window.location.href = loginPage;
+function requiereSesion(paginaLogin) {
+  if (!obtenerUsuario()) window.location.href = paginaLogin;
 }
 
-function logout(loginPage) {
-  localStorage.removeItem(AUTH_KEY);
-  window.location.href = loginPage;
+function cerrarSesion(paginaLogin) {
+  localStorage.removeItem(CLAVE_SESION);
+  window.location.href = paginaLogin;
 }
 
-function paintUserInTopbar() {
-  const user = getUser();
-  if (!user) return;
+function pintarUsuarioEnBarra() {
+  const usuario = obtenerUsuario();
+  if (!usuario) return;
 
-  document.querySelectorAll('.user-name').forEach(el => {
-    el.textContent = `Hola, ${user.name.split(' ')[0]}`;
+  document.querySelectorAll('.nombre-usuario').forEach(el => {
+    el.textContent = `Hola, ${usuario.nombre.split(' ')[0]}`;
   });
 
   document.querySelectorAll('.avatar').forEach(el => {
-    el.textContent = user.initial;
+    el.textContent = usuario.inicial;
   });
 
-  document.querySelectorAll('.profile-name').forEach(el => {
-    el.textContent = user.name;
+  document.querySelectorAll('.nombre-perfil').forEach(el => {
+    el.textContent = usuario.nombre;
   });
 }
 
-function wireLogout(loginPage) {
-  document.querySelectorAll('[data-logout]').forEach(el => {
+function activarBotonSalir(paginaLogin) {
+  document.querySelectorAll('[data-salir]').forEach(el => {
     el.addEventListener('click', (e) => {
       e.preventDefault();
-      logout(loginPage);
+      cerrarSesion(paginaLogin);
     });
   });
 }
 
 /* ---- Notificaciones ---- */
-function notificationsEnabled() {
-  const raw = localStorage.getItem(NOTIF_KEY);
+function notificacionesActivas() {
+  const raw = localStorage.getItem(CLAVE_NOTIF);
   return raw === null ? true : raw === 'true';
 }
 
-function setNotificationsEnabled(value) {
-  localStorage.setItem(NOTIF_KEY, value ? 'true' : 'false');
+function guardarNotificaciones(valor) {
+  localStorage.setItem(CLAVE_NOTIF, valor ? 'true' : 'false');
 }
 
-function notify(message, type = 'info') {
-  if (!notificationsEnabled()) return;
+function avisar(mensaje, tipo = 'info') {
+  if (!notificacionesActivas()) return;
 
-  let container = document.getElementById('toastContainer');
-  if (!container) {
-    container = document.createElement('div');
-    container.id = 'toastContainer';
-    document.body.appendChild(container);
+  let contenedor = document.getElementById('contenedorAvisos');
+  if (!contenedor) {
+    contenedor = document.createElement('div');
+    contenedor.id = 'contenedorAvisos';
+    document.body.appendChild(contenedor);
   }
 
-  const toast = document.createElement('div');
-  toast.className = `toast${type === 'ok' ? ' toast-ok' : ''}${type === 'warn' ? ' toast-warn' : ''}`;
-  toast.textContent = message;
-  container.appendChild(toast);
+  const aviso = document.createElement('div');
+  aviso.className = `aviso${tipo === 'ok' ? ' aviso-ok' : ''}${tipo === 'warn' ? ' aviso-warn' : ''}`;
+  aviso.textContent = mensaje;
+  contenedor.appendChild(aviso);
 
-  requestAnimationFrame(() => toast.classList.add('show'));
+  requestAnimationFrame(() => aviso.classList.add('show'));
 
   setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
+    aviso.classList.remove('show');
+    setTimeout(() => aviso.remove(), 300);
   }, 2600);
 }
 
 /* ---- Tema oscuro/claro ---- */
-const THEME_KEY = 'dp_light_theme';
+const CLAVE_TEMA = 'dp_light_theme';
 
-function applyStoredTheme() {
-  const light = localStorage.getItem(THEME_KEY) === 'true';
-  document.body.classList.toggle('light-theme', light);
-  return light;
+function aplicarTemaGuardado() {
+  const esClaro = localStorage.getItem(CLAVE_TEMA) === 'true';
+  document.body.classList.toggle('tema-claro', esClaro);
+  return esClaro;
 }
 
-function setLightTheme(value) {
-  localStorage.setItem(THEME_KEY, value ? 'true' : 'false');
-  document.body.classList.toggle('light-theme', value);
+function ponerTemaClaro(valor) {
+  localStorage.setItem(CLAVE_TEMA, valor ? 'true' : 'false');
+  document.body.classList.toggle('tema-claro', valor);
 }

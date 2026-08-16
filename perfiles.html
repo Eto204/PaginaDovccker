@@ -2,46 +2,46 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" contenido="width=device-width, initial-scale=1.0" />
   <title>Perfiles — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
   <link rel="stylesheet" href="perfiles.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
+  <header class="barra-superior">
+    <div class="marca">
       <span class="logo">PD</span>
       <h1>Panel Docker</h1>
     </div>
-    <div class="user">
-      <span class="user-name">Hola, Juan</span>
+    <div class="usuario">
+      <span class="nombre-usuario">Hola, Juan</span>
       <div class="avatar">J</div>
-      <button class="logout-link" data-logout>Salir</button>
+      <button class="enlace-salir" data-salir>Salir</button>
     </div>
   </header>
 
-  <div class="layout">
-    <aside class="sidebar">
+  <div class="estructura">
+    <aside class="barra-lateral">
       <nav>
-        <a href="perfiles.html" class="nav-item active">Perfiles</a>
-        <a href="crear-perfil.html" class="nav-item">Crear Perfil</a>
-        <a href="registros.html" class="nav-item">Ver Registros</a>
-        <a href="ajustes.html" class="nav-item">Ajustes</a>
+        <a href="perfiles.html" class="item-nav active">Perfiles</a>
+        <a href="crear-perfil.html" class="item-nav">Crear Perfil</a>
+        <a href="registros.html" class="item-nav">Ver Registros</a>
+        <a href="ajustes.html" class="item-nav">Ajustes</a>
       </nav>
-      <div class="profile-box">
-        <p class="profile-label">Perfil activo</p>
-        <p class="profile-name">Juan Pérez</p>
-        <p class="profile-hint">Perfiles reales del servidor</p>
+      <div class="caja-perfil">
+        <p class="etiqueta-perfil">Perfil activo</p>
+        <p class="nombre-perfil">Juan Pérez</p>
+        <p class="pista-perfil">Perfiles reales del servidor</p>
       </div>
     </aside>
 
-    <main class="content">
-      <section class="hero">
+    <main class="contenido">
+      <section class="portada">
         <h2>Perfiles del servidor</h2>
-        <p class="subtitle">Usuarios reales y el estado de su entorno aislado (Distrobox).</p>
+        <p class="subtitulo">Usuarios reales y el estado de su entorno aislado (Distrobox).</p>
       </section>
 
-      <section class="cards" id="cardsWrap"></section>
+      <section class="tarjetas" id="contenedorTarjetas"></section>
     </main>
   </div>
 
@@ -49,59 +49,61 @@
     <p>Panel Docker · Consola de administración de perfiles reales</p>
   </footer>
 
-  <div id="toastContainer"></div>
+  <div id="contenedorAvisos"></div>
 
   <script src="configuracion.js"></script>
   <script src="sesion.js"></script>
   <script src="utilidades.js"></script>
   <script>
-    requireAuth('index.html');
-    paintUserInTopbar();
-    wireLogout('index.html');
-    applyStoredTheme();
+    requiereSesion('index.html');
+    pintarUsuarioEnBarra();
+    activarBotonSalir('index.html');
+    aplicarTemaGuardado();
 
-    const ROLE_LABEL = { alumnos: 'Alumno', maestros: 'Maestro', admins: 'Admin' };
-    const cardsWrap = document.getElementById('cardsWrap');
+    const ETIQUETA_ROL = { alumnos: 'Alumno', maestros: 'Maestro', admins: 'Admin' };
+    const contenedorTarjetas = document.getElementById('contenedorTarjetas');
 
-    async function loadProfiles() {
-      cardsWrap.innerHTML = '<p class="subtitle">Cargando perfiles…</p>';
+    async function cargarPerfiles() {
+      contenedorTarjetas.innerHTML = '<p class="subtitulo">Cargando perfiles…</p>';
       try {
-        const res = await fetch(`${API_BASE}/api/profiles`);
-        const data = await res.json();
-        if (!data.ok) throw new Error(data.message);
-        renderProfiles(data.profiles);
+        const res = await fetch(`${URL_BASE}/api/profiles`);
+        const datos = await res.json();
+        if (!datos.ok) throw new Error(datos.mensaje);
+        mostrarPerfiles(datos.profiles);
       } catch (err) {
-        cardsWrap.innerHTML = `<p class="subtitle">No se pudo conectar con el backend. Revisa que esté corriendo y que la dirección en configuracion.js sea la correcta.</p>`;
+        // no jaló la conexión, avisamos bonito en vez de
+        // dejar la pantalla en blanco
+        contenedorTarjetas.innerHTML = `<p class="subtitulo">No se pudo conectar con el backend. Revisa que esté corriendo y que la dirección en configuracion.js sea la correcta.</p>`;
       }
     }
 
-    function renderProfiles(profiles) {
-      cardsWrap.innerHTML = '';
-      if (profiles.length === 0) {
-        cardsWrap.innerHTML = '<p class="subtitle">Aún no hay perfiles. Ve a "Crear Perfil" para dar de alta el primero.</p>';
+    function mostrarPerfiles(perfiles) {
+      contenedorTarjetas.innerHTML = '';
+      if (perfiles.length === 0) {
+        contenedorTarjetas.innerHTML = '<p class="subtitulo">Aún no hay perfiles. Ve a "Crear Perfil" para dar de alta el primero.</p>';
         return;
       }
-      profiles.forEach(p => {
-        const card = document.createElement('article');
-        card.className = 'card';
-        const isReady = p.status === 'creado';
-        card.innerHTML = `
-          <div class="card-head">
-            <h3>${escapeHtml(p.username)}</h3>
-            <span class="status ${isReady ? 'status-on' : 'status-off'}">
-              ${isReady ? '● Entorno listo' : '● Sin entorno'}
+      perfiles.forEach(p => {
+        const tarjeta = document.createElement('article');
+        tarjeta.className = 'tarjeta';
+        const listo = p.estado === 'creado';
+        tarjeta.innerHTML = `
+          <div class="tarjeta-encabezado">
+            <h3>${escaparHtml(p.username)}</h3>
+            <span class="estado ${listo ? 'estado-activo' : 'estado-inactivo'}">
+              ${listo ? '● Entorno listo' : '● Sin entorno'}
             </span>
           </div>
-          <p class="card-desc">${ROLE_LABEL[p.role] || p.role} · uso de disco: ${escapeHtml(p.homeSize)}</p>
-          <div class="card-actions">
-            <a class="btn btn-ghost" href="registros.html?app=${encodeURIComponent(p.username)}">Ver logs</a>
+          <p class="tarjeta-desc">${ETIQUETA_ROL[p.role] || p.role} · uso de disco: ${escaparHtml(p.homeSize)}</p>
+          <div class="tarjeta-acciones">
+            <a class="boton boton-fantasma" href="registros.html?app=${encodeURIComponent(p.username)}">Ver registros</a>
           </div>
         `;
-        cardsWrap.appendChild(card);
+        contenedorTarjetas.appendChild(tarjeta);
       });
     }
 
-    loadProfiles();
+    cargarPerfiles();
   </script>
 </body>
 </html>

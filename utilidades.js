@@ -1,12 +1,12 @@
 /* ============================================
-   utilidades.js — funciones pequeñas compartidas
-   entre las distintas páginas del panel.
+   utilidades.js -- funciones chiquitas que se
+   repiten entre las paginas del panel
    ============================================ */
 
-// Evita que un nombre de usuario con caracteres raros
-// rompa el HTML al mostrarlo en pantalla.
-function escapeHtml(str) {
+// para que un nombre de usuario con caracteres raros
+// no rompa el html cuando lo pintamos en pantalla
+function escaparHtml(texto) {
   const div = document.createElement('div');
-  div.textContent = str;
+  div.textContent = texto;
   return div.innerHTML;
 }

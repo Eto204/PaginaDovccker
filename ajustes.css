@@ -1,74 +1,74 @@
 /* ====== Solo para la vista Ajustes ====== */
-.panel-subtitle {
+.subtitulo-panel {
   font-size: 16px;
-  color: var(--text-strong);
+  color: var(--texto-fuerte);
   margin-bottom: 16px;
 }
 
 /* --- Tarjeta de cuenta --- */
-.account-row {
+.fila-cuenta {
   display: flex;
   align-items: center;
   gap: 14px;
 }
-.account-avatar {
+.avatar-cuenta {
   width: 44px; height: 44px; border-radius: 50%;
-  background: var(--accent); color: var(--accent-ink);
+  background: var(--acento); color: var(--acento-tinta);
   display: flex; align-items: center; justify-content: center;
   font-weight: 700; font-size: 16px;
   flex-shrink: 0;
 }
-.account-name { font-size: 15px; font-weight: 600; color: var(--text-strong); }
-.account-email { font-size: 13px; color: var(--muted); margin-top: 2px; }
-.account-badge {
+.nombre-cuenta { font-size: 15px; font-weight: 600; color: var(--texto-fuerte); }
+.correo-cuenta { font-size: 13px; color: var(--tenue); margin-top: 2px; }
+.insignia-cuenta {
   margin-left: auto;
   font-size: 12px;
   font-weight: 600;
-  color: var(--success);
-  background: var(--success-bg);
+  color: var(--exito);
+  background: var(--exito-fondo);
   padding: 4px 10px;
   border-radius: 20px;
   white-space: nowrap;
 }
 
 /* --- Filas de preferencias --- */
-.setting-row {
+.fila-ajuste {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
   padding: 14px 0;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--borde);
 }
-.setting-row:first-of-type { border-top: none; padding-top: 0; }
-.setting-title { font-size: 14px; color: var(--text-strong); font-weight: 600; }
-.setting-desc { font-size: 12px; color: var(--muted-2); margin-top: 3px; }
+.fila-ajuste:first-of-type { border-top: none; padding-top: 0; }
+.titulo-ajuste { font-size: 14px; color: var(--texto-fuerte); font-weight: 600; }
+.desc-ajuste { font-size: 12px; color: var(--tenue-2); margin-top: 3px; }
 
 /* --- Switch (toggle) --- */
-.switch {
+.interruptor {
   position: relative;
   display: inline-block;
   width: 42px;
   height: 24px;
   flex-shrink: 0;
 }
-.switch input { opacity: 0; width: 0; height: 0; }
-.switch-slider {
+.interruptor input { opacity: 0; width: 0; height: 0; }
+.interruptor-control {
   position: absolute;
   cursor: pointer;
   inset: 0;
-  background: var(--border);
+  background: var(--borde);
   border-radius: 999px;
   transition: background .2s;
 }
-.switch-slider::before {
+.interruptor-control::before {
   content: "";
   position: absolute;
   height: 18px; width: 18px;
   left: 3px; bottom: 3px;
-  background: var(--text-strong);
+  background: var(--texto-fuerte);
   border-radius: 50%;
   transition: transform .2s;
 }
-.switch input:checked + .switch-slider { background: var(--accent); }
-.switch input:checked + .switch-slider::before { transform: translateX(18px); }
+.interruptor input:checked + .interruptor-control { background: var(--acento); }
+.interruptor input:checked + .interruptor-control::before { transform: translateX(18px); }

@@ -2,74 +2,74 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" contenido="width=device-width, initial-scale=1.0" />
   <title>Crear Perfil — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
   <link rel="stylesheet" href="crear-perfil.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
+  <header class="barra-superior">
+    <div class="marca">
       <span class="logo">PD</span>
       <h1>Panel Docker</h1>
     </div>
-    <div class="user">
-      <span class="user-name">Hola, Juan</span>
+    <div class="usuario">
+      <span class="nombre-usuario">Hola, Juan</span>
       <div class="avatar">J</div>
-      <button class="logout-link" data-logout>Salir</button>
+      <button class="enlace-salir" data-salir>Salir</button>
     </div>
   </header>
 
-  <div class="layout">
-    <aside class="sidebar">
+  <div class="estructura">
+    <aside class="barra-lateral">
       <nav>
-        <a href="perfiles.html" class="nav-item">Perfiles</a>
-        <a href="crear-perfil.html" class="nav-item active">Crear Perfil</a>
-        <a href="registros.html" class="nav-item">Ver Registros</a>
-        <a href="ajustes.html" class="nav-item">Ajustes</a>
+        <a href="perfiles.html" class="item-nav">Perfiles</a>
+        <a href="crear-perfil.html" class="item-nav active">Crear Perfil</a>
+        <a href="registros.html" class="item-nav">Ver Registros</a>
+        <a href="ajustes.html" class="item-nav">Ajustes</a>
       </nav>
-      <div class="profile-box">
-        <p class="profile-label">Perfil activo</p>
-        <p class="profile-name">Juan Pérez</p>
-        <p class="profile-hint">Solo el admin puede crear perfiles</p>
+      <div class="caja-perfil">
+        <p class="etiqueta-perfil">Perfil activo</p>
+        <p class="nombre-perfil">Juan Pérez</p>
+        <p class="pista-perfil">Solo el admin puede crear perfiles</p>
       </div>
     </aside>
 
-    <main class="content">
-      <section class="hero">
+    <main class="contenido">
+      <section class="portada">
         <h2>Crear un perfil nuevo</h2>
-        <p class="subtitle">Da de alta un usuario Linux real con su propio entorno aislado y persistente (Distrobox).</p>
+        <p class="subtitulo">Da de alta un usuario Linux real con su propio entorno aislado y persistente (Distrobox).</p>
       </section>
 
       <section class="panel">
-        <form class="form" id="buildForm">
+        <form class="form" id="formularioCrear">
           <label>
             Token de administrador
-            <input type="password" id="adminToken" placeholder="Token del backend (ver ajustes)" />
+            <input type="password" id="tokenAdmin" placeholder="Token del backend (ver ajustes)" />
           </label>
           <label>
             Nombre de usuario
-            <input type="text" id="appName" placeholder="ej: alumno7" />
+            <input type="text" id="nombreApp" placeholder="ej: alumno7" />
           </label>
           <label>
             Rol
-            <select id="appRole" class="log-select" style="margin-bottom:0;">
+            <select id="rolApp" class="selector-registro" style="margin-bottom:0;">
               <option value="alumno">Alumno</option>
               <option value="maestro">Maestro</option>
               <option value="admin">Admin</option>
             </select>
           </label>
-          <div class="preview">
-            <span class="preview-label">Se ejecutará en el servidor:</span>
-            <code>useradd -m -G <b id="previewRole">alumnos</b> <b id="previewName">alumno7</b> &amp;&amp; distrobox create --name mi-entorno</code>
+          <div class="vista-previa">
+            <span class="etiqueta-vista-previa">Se ejecutará en el servidor:</span>
+            <code>useradd -m -G <b id="previewRol">alumnos</b> <b id="previewNombre">alumno7</b> &amp;&amp; distrobox create --name mi-entorno</code>
           </div>
-          <button type="button" class="btn btn-primary btn-large" id="buildBtn">Crear perfil</button>
+          <button type="button" class="boton boton-primario boton-grande" id="botonCrear">Crear perfil</button>
         </form>
       </section>
 
-      <section class="panel" id="buildLogPanel" style="display:none;">
+      <section class="panel" id="panelLog" style="display:none;">
         <h2>Progreso</h2>
-        <div class="logs" id="buildLog"></div>
+        <div class="registros" id="cajaLog"></div>
       </section>
     </main>
   </div>
@@ -78,90 +78,93 @@
     <p>Panel Docker · Consola de administración de perfiles reales</p>
   </footer>
 
-  <div id="toastContainer"></div>
+  <div id="contenedorAvisos"></div>
 
   <script src="configuracion.js"></script>
   <script src="sesion.js"></script>
   <script src="utilidades.js"></script>
   <script>
-    requireAuth('index.html');
-    paintUserInTopbar();
-    wireLogout('index.html');
-    applyStoredTheme();
+    requiereSesion('index.html');
+    pintarUsuarioEnBarra();
+    activarBotonSalir('index.html');
+    aplicarTemaGuardado();
 
-    const adminToken = document.getElementById('adminToken');
-    const appName = document.getElementById('appName');
-    const appRole = document.getElementById('appRole');
-    const previewName = document.getElementById('previewName');
-    const previewRole = document.getElementById('previewRole');
-    const buildPanel = document.getElementById('buildLogPanel');
-    const buildLog = document.getElementById('buildLog');
-    const buildBtn = document.getElementById('buildBtn');
+    const tokenAdmin = document.getElementById('tokenAdmin');
+    const nombreApp = document.getElementById('nombreApp');
+    const rolApp = document.getElementById('rolApp');
+    const previewNombre = document.getElementById('previewNombre');
+    const previewRol = document.getElementById('previewRol');
+    const panelLog = document.getElementById('panelLog');
+    const cajaLog = document.getElementById('cajaLog');
+    const botonCrear = document.getElementById('botonCrear');
 
-    const ROLE_GROUP = { alumno: 'alumnos', maestro: 'maestros', admin: 'admins' };
+    const GRUPO_ROL = { alumno: 'alumnos', maestro: 'maestros', admin: 'admins' };
 
-    // Recuerda el token en este navegador para no escribirlo cada vez
-    adminToken.value = localStorage.getItem('dp_admin_token') || '';
+    // recuerda el token en este navegador pa' no
+    // andarlo escribiendo cada rato
+    tokenAdmin.value = localStorage.getItem('dp_admin_token') || '';
 
-    function updatePreview() {
-      previewName.textContent = appName.value.trim() || 'alumno7';
-      previewRole.textContent = ROLE_GROUP[appRole.value];
+    function actualizarVistaPrevia() {
+      previewNombre.textContent = nombreApp.value.trim() || 'alumno7';
+      previewRol.textContent = GRUPO_ROL[rolApp.value];
     }
-    [appName, appRole].forEach(el => el.addEventListener('input', updatePreview));
-    updatePreview();
+    [nombreApp, rolApp].forEach(el => el.addEventListener('input', actualizarVistaPrevia));
+    actualizarVistaPrevia();
 
-    function addBuildLine(text, type) {
+    function agregarLineaLog(texto, tipo) {
       const p = document.createElement('p');
-      if (type) p.className = `log-${type}`;
-      const time = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
-      p.innerHTML = `<span class="log-time">${time}</span> ${text}`;
-      buildLog.appendChild(p);
-      buildLog.scrollTop = buildLog.scrollHeight;
+      if (tipo) p.className = `registro-${tipo}`;
+      const hora = new Date().toLocaleTimeString('es-MX', { hour: '2-digit', minute: '2-digit' });
+      p.innerHTML = `<span class="registro-hora">${hora}</span> ${texto}`;
+      cajaLog.appendChild(p);
+      cajaLog.scrollTop = cajaLog.scrollHeight;
     }
 
-    buildBtn.addEventListener('click', async () => {
-      const username = appName.value.trim();
-      const role = appRole.value;
-      const token = adminToken.value.trim();
+    botonCrear.addEventListener('click', async () => {
+      const nombreUsuario = nombreApp.value.trim();
+      const rol = rolApp.value;
+      const token = tokenAdmin.value.trim();
 
-      if (!username) return notify('Escribe un nombre de usuario', 'warn');
-      if (!token) return notify('Falta el token de administrador', 'warn');
+      if (!nombreUsuario) return avisar('Escribe un nombre de usuario', 'warn');
+      if (!token) return avisar('Falta el token de administrador', 'warn');
 
       localStorage.setItem('dp_admin_token', token);
 
-      buildPanel.style.display = 'block';
-      buildLog.innerHTML = '';
-      buildBtn.disabled = true;
-      buildBtn.textContent = 'Creando…';
-      addBuildLine(`Creando usuario Linux "${username}" (${role})…`, null);
+      panelLog.style.display = 'block';
+      cajaLog.innerHTML = '';
+      botonCrear.disabled = true;
+      botonCrear.textContent = 'Creando…';
+      agregarLineaLog(`Creando usuario Linux "${nombreUsuario}" (${rol})…`, null);
 
       try {
-        const res = await fetch(`${API_BASE}/api/profiles`, {
+        // el backend espera username/role tal cual, eso
+        // no se toca porque ya esta acordado con el server
+        const res = await fetch(`${URL_BASE}/api/profiles`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'X-Admin-Token': token
           },
-          body: JSON.stringify({ username, role })
+          body: JSON.stringify({ username: nombreUsuario, role: rol })
         });
-        const data = await res.json();
+        const datos = await res.json();
 
-        if (!data.ok) {
-          addBuildLine(`Error: ${data.message}`, 'warn');
-          notify(`Error: ${data.message}`, 'warn');
+        if (!datos.ok) {
+          agregarLineaLog(`Error: ${datos.mensaje}`, 'warn');
+          avisar(`Error: ${datos.mensaje}`, 'warn');
         } else {
-          addBuildLine(`Usuario creado`, 'ok');
-          addBuildLine(`Entorno "mi-entorno" (Distrobox) listo y aislado`, 'ok');
-          addBuildLine(`Contraseña temporal: <b>${data.tempPassword}</b> (debe cambiarla al entrar)`, 'ok');
-          notify(`Perfil "${username}" creado`, 'ok');
+          agregarLineaLog(`Usuario creado`, 'ok');
+          agregarLineaLog(`Entorno "mi-entorno" (Distrobox) listo y aislado`, 'ok');
+          agregarLineaLog(`Contraseña temporal: <b>${datos.tempPassword}</b> (debe cambiarla al entrar)`, 'ok');
+          avisar(`Perfil "${nombreUsuario}" creado`, 'ok');
         }
       } catch (err) {
-        addBuildLine(`No se pudo conectar con el backend`, 'warn');
-        notify('No se pudo conectar con el backend', 'warn');
+        agregarLineaLog(`No se pudo conectar con el backend`, 'warn');
+        avisar('No se pudo conectar con el backend', 'warn');
       }
 
-      buildBtn.disabled = false;
-      buildBtn.textContent = 'Crear perfil';
+      botonCrear.disabled = false;
+      botonCrear.textContent = 'Crear perfil';
     });
   </script>
 </body>

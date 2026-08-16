@@ -1,25 +1,25 @@
 /* ====== Solo para la vista Ver Registros ====== */
-.log-select-label {
+.etiqueta-selector-registro {
   display: block;
   font-size: 12px;
-  color: var(--muted-2);
+  color: var(--tenue-2);
   margin-bottom: 6px;
 }
-.log-select {
+.selector-registro {
   padding: 9px 12px;
-  background: var(--bg);
-  border: 1px solid var(--border);
+  background: var(--fondo);
+  border: 1px solid var(--borde);
   border-radius: 8px;
-  color: var(--text-strong);
+  color: var(--texto-fuerte);
   font-size: 14px;
   font-family: inherit;
   margin-bottom: 16px;
 }
-.log-select:focus { outline: none; border-color: var(--accent); }
+.selector-registro:focus { outline: none; border-color: var(--acento); }
 
-.logs {
-  background: var(--bg);
-  border: 1px solid var(--border);
+.registros {
+  background: var(--fondo);
+  border: 1px solid var(--borde);
   border-radius: 8px;
   padding: 14px;
   font-family: 'Fira Code', 'Courier New', monospace;
@@ -27,7 +27,7 @@
   max-height: 320px;
   overflow-y: auto;
 }
-.logs p { padding: 4px 0; color: var(--text); }
-.log-time { color: var(--muted-2); margin-right: 10px; }
-.log-ok { color: var(--success); }
-.log-warn { color: var(--warn); }
+.registros p { padding: 4px 0; color: var(--texto); }
+.registro-hora { color: var(--tenue-2); margin-right: 10px; }
+.registro-ok { color: var(--exito); }
+.registro-warn { color: var(--advertencia); }

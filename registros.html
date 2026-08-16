@@ -2,47 +2,47 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" contenido="width=device-width, initial-scale=1.0" />
   <title>Ver Registros — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
   <link rel="stylesheet" href="registros.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
+  <header class="barra-superior">
+    <div class="marca">
       <span class="logo">PD</span>
       <h1>Panel Docker</h1>
     </div>
-    <div class="user">
-      <span class="user-name">Hola, Juan</span>
+    <div class="usuario">
+      <span class="nombre-usuario">Hola, Juan</span>
       <div class="avatar">J</div>
-      <button class="logout-link" data-logout>Salir</button>
+      <button class="enlace-salir" data-salir>Salir</button>
     </div>
   </header>
 
-  <div class="layout">
-    <aside class="sidebar">
+  <div class="estructura">
+    <aside class="barra-lateral">
       <nav>
-        <a href="perfiles.html" class="nav-item">Perfiles</a>
-        <a href="crear-perfil.html" class="nav-item">Crear Perfil</a>
-        <a href="registros.html" class="nav-item active">Ver Registros</a>
-        <a href="ajustes.html" class="nav-item">Ajustes</a>
+        <a href="perfiles.html" class="item-nav">Perfiles</a>
+        <a href="crear-perfil.html" class="item-nav">Crear Perfil</a>
+        <a href="registros.html" class="item-nav active">Ver Registros</a>
+        <a href="ajustes.html" class="item-nav">Ajustes</a>
       </nav>
-      <div class="profile-box">
-        <p class="profile-label">Perfil activo</p>
-        <p class="profile-name">Juan Pérez</p>
-        <p class="profile-hint">Bitácora real del servidor</p>
+      <div class="caja-perfil">
+        <p class="etiqueta-perfil">Perfil activo</p>
+        <p class="nombre-perfil">Juan Pérez</p>
+        <p class="pista-perfil">Bitácora real del servidor</p>
       </div>
     </aside>
 
-    <main class="content">
-      <section class="hero">
+    <main class="contenido">
+      <section class="portada">
         <h2>Bitácora de administración</h2>
-        <p class="subtitle">Cada perfil creado o eliminado queda registrado aquí, con fecha y hora reales.</p>
+        <p class="subtitulo">Cada perfil creado o eliminado queda registrado aquí, con fecha y hora reales.</p>
       </section>
 
       <section class="panel">
-        <div class="logs" id="logsBox" style="max-height:480px;"></div>
+        <div class="registros" id="cajaLogs" style="max-height:480px;"></div>
       </section>
     </main>
   </div>
@@ -51,47 +51,47 @@
     <p>Panel Docker · Consola de administración de perfiles reales</p>
   </footer>
 
-  <div id="toastContainer"></div>
+  <div id="contenedorAvisos"></div>
 
   <script src="configuracion.js"></script>
   <script src="sesion.js"></script>
   <script src="utilidades.js"></script>
   <script>
-    requireAuth('index.html');
-    paintUserInTopbar();
-    wireLogout('index.html');
-    applyStoredTheme();
+    requiereSesion('index.html');
+    pintarUsuarioEnBarra();
+    activarBotonSalir('index.html');
+    aplicarTemaGuardado();
 
-    const logsBox = document.getElementById('logsBox');
+    const cajaLogs = document.getElementById('cajaLogs');
 
-    async function loadLogs() {
-      logsBox.innerHTML = '<p>Cargando…</p>';
+    async function cargarRegistros() {
+      cajaLogs.innerHTML = '<p>Cargando…</p>';
       try {
-        const res = await fetch(`${API_BASE}/api/logs`);
-        const data = await res.json();
-        if (!data.ok) throw new Error(data.message);
-        renderLogs(data.logs);
+        const res = await fetch(`${URL_BASE}/api/registros`);
+        const datos = await res.json();
+        if (!datos.ok) throw new Error(datos.mensaje);
+        mostrarRegistros(datos.registros);
       } catch (err) {
-        logsBox.innerHTML = '<p>No se pudo conectar con el backend.</p>';
+        cajaLogs.innerHTML = '<p>No se pudo conectar con el backend.</p>';
       }
     }
 
-    function renderLogs(entries) {
-      logsBox.innerHTML = '';
-      if (entries.length === 0) {
-        logsBox.innerHTML = '<p>Sin registros todavía.</p>';
+    function mostrarRegistros(registros) {
+      cajaLogs.innerHTML = '';
+      if (registros.length === 0) {
+        cajaLogs.innerHTML = '<p>Sin registros todavía.</p>';
         return;
       }
-      entries.forEach(entry => {
+      registros.forEach(registro => {
         const p = document.createElement('p');
-        if (entry.type) p.className = `log-${entry.type}`;
-        const time = new Date(entry.time).toLocaleString('es-MX');
-        p.innerHTML = `<span class="log-time">${time}</span> ${entry.text}`;
-        logsBox.appendChild(p);
+        if (registro.type) p.className = `registro-${registro.type}`;
+        const hora = new Date(registro.time).toLocaleString('es-MX');
+        p.innerHTML = `<span class="registro-hora">${hora}</span> ${registro.text}`;
+        cajaLogs.appendChild(p);
       });
     }
 
-    loadLogs();
+    cargarRegistros();
   </script>
 </body>
 </html>

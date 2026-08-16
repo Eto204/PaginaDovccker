@@ -2,99 +2,99 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" contenido="width=device-width, initial-scale=1.0" />
   <title>Ajustes — Panel Docker</title>
   <link rel="stylesheet" href="base.css" />
   <link rel="stylesheet" href="ajustes.css" />
 </head>
 <body>
-  <header class="topbar">
-    <div class="brand">
+  <header class="barra-superior">
+    <div class="marca">
       <span class="logo">PD</span>
       <h1>Panel Docker</h1>
     </div>
-    <div class="user">
-      <span class="user-name">Hola, Juan</span>
+    <div class="usuario">
+      <span class="nombre-usuario">Hola, Juan</span>
       <div class="avatar">J</div>
-      <button class="logout-link" data-logout>Salir</button>
+      <button class="enlace-salir" data-salir>Salir</button>
     </div>
   </header>
 
-  <div class="layout">
-    <aside class="sidebar">
+  <div class="estructura">
+    <aside class="barra-lateral">
       <nav>
-        <a href="perfiles.html" class="nav-item">Perfiles</a>
-        <a href="crear-perfil.html" class="nav-item">Crear Perfil</a>
-        <a href="registros.html" class="nav-item">Ver Registros</a>
-        <a href="ajustes.html" class="nav-item active">Ajustes</a>
+        <a href="perfiles.html" class="item-nav">Perfiles</a>
+        <a href="crear-perfil.html" class="item-nav">Crear Perfil</a>
+        <a href="registros.html" class="item-nav">Ver Registros</a>
+        <a href="ajustes.html" class="item-nav active">Ajustes</a>
       </nav>
-      <div class="profile-box">
-        <p class="profile-label">Perfil activo</p>
-        <p class="profile-name">Juan Pérez</p>
-        <p class="profile-hint">Solo el admin puede crear perfiles</p>
+      <div class="caja-perfil">
+        <p class="etiqueta-perfil">Perfil activo</p>
+        <p class="nombre-perfil">Juan Pérez</p>
+        <p class="pista-perfil">Solo el admin puede crear perfiles</p>
       </div>
     </aside>
 
-    <main class="content">
-      <section class="hero">
+    <main class="contenido">
+      <section class="portada">
         <h2>Ajustes</h2>
-        <p class="subtitle">Tu cuenta y tus preferencias del panel.</p>
+        <p class="subtitulo">Tu cuenta y tus preferencias del panel.</p>
       </section>
 
       <section class="panel">
-        <h2 class="panel-subtitle">Cuenta</h2>
-        <div class="account-row">
-          <div class="account-avatar" id="settingsAvatar">J</div>
+        <h2 class="subtitulo-panel">Cuenta</h2>
+        <div class="fila-cuenta">
+          <div class="avatar-cuenta" id="avatarAjustes">J</div>
           <div>
-            <p class="account-name" id="settingsName">Juan Pérez</p>
-            <p class="account-email" id="settingsEmail">juan.perez@gmail.com</p>
+            <p class="nombre-cuenta" id="nombreAjustes">Juan Pérez</p>
+            <p class="correo-cuenta" id="correoAjustes">juan.perez@gmail.com</p>
           </div>
-          <span class="account-badge" id="settingsProvider">Conectado</span>
+          <span class="insignia-cuenta" id="proveedorAjustes">Conectado</span>
         </div>
       </section>
 
       <section class="panel">
-        <h2 class="panel-subtitle">Preferencias</h2>
+        <h2 class="subtitulo-panel">Preferencias</h2>
 
-        <div class="setting-row">
+        <div class="fila-ajuste">
           <div>
-            <p class="setting-title">Tema oscuro</p>
-            <p class="setting-desc">Desactívalo para probar el modo claro del panel.</p>
+            <p class="titulo-ajuste">Tema oscuro</p>
+            <p class="desc-ajuste">Desactívalo para probar el modo claro del panel.</p>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="themeToggle" />
-            <span class="switch-slider"></span>
+          <label class="interruptor">
+            <input type="checkbox" id="interruptorTema" />
+            <span class="interruptor-control"></span>
           </label>
         </div>
 
-        <div class="setting-row">
+        <div class="fila-ajuste">
           <div>
-            <p class="setting-title">Notificaciones</p>
-            <p class="setting-desc">Avísame cuando una aplicación cambie de estado.</p>
+            <p class="titulo-ajuste">Notificaciones</p>
+            <p class="desc-ajuste">Avísame cuando una aplicación cambie de estado.</p>
           </div>
-          <label class="switch">
-            <input type="checkbox" id="notifToggle" />
-            <span class="switch-slider"></span>
+          <label class="interruptor">
+            <input type="checkbox" id="interruptorNotif" />
+            <span class="interruptor-control"></span>
           </label>
         </div>
       </section>
 
       <section class="panel">
-        <h2 class="panel-subtitle">Backend de perfiles</h2>
-        <p class="setting-desc" style="margin-bottom: 10px;">Token de administrador para crear o borrar perfiles reales en el servidor. Debe coincidir con el que está configurado en el backend.</p>
+        <h2 class="subtitulo-panel">Backend de perfiles</h2>
+        <p class="desc-ajuste" style="margin-bottom: 10px;">Token de administrador para crear o borrar perfiles reales en el servidor. Debe coincidir con el que está configurado en el backend.</p>
         <div class="form" style="max-width:360px;">
           <label>
             Token
-            <input type="password" id="adminTokenSetting" placeholder="Token del backend" />
+            <input type="password" id="tokenAdminAjustes" placeholder="Token del backend" />
           </label>
-          <button class="btn btn-primary" id="saveTokenBtn" style="align-self:flex-start;">Guardar</button>
+          <button class="boton boton-primario" id="botonGuardarToken" style="align-self:flex-start;">Guardar</button>
         </div>
       </section>
 
       <section class="panel">
-        <h2 class="panel-subtitle">Sesión</h2>
-        <p class="setting-desc" style="margin-bottom: 14px;">Cierra tu sesión en este dispositivo.</p>
-        <button class="btn btn-danger" data-logout>Cerrar sesión</button>
+        <h2 class="subtitulo-panel">Sesión</h2>
+        <p class="desc-ajuste" style="margin-bottom: 14px;">Cierra tu sesión en este dispositivo.</p>
+        <button class="boton boton-peligro" data-salir>Cerrar sesión</button>
       </section>
     </main>
   </div>
@@ -103,46 +103,47 @@
     <p>Panel Docker Simple · Hecho para que cualquiera pueda usar Docker sin complicaciones</p>
   </footer>
 
-  <div id="toastContainer"></div>
+  <div id="contenedorAvisos"></div>
 
   <script src="sesion.js"></script>
   <script src="utilidades.js"></script>
   <script>
-    requireAuth('index.html');
-    paintUserInTopbar();
-    wireLogout('index.html');
+    requiereSesion('index.html');
+    pintarUsuarioEnBarra();
+    activarBotonSalir('index.html');
 
-    const user = getUser();
-    if (user) {
-      document.getElementById('settingsAvatar').textContent = user.initial;
-      document.getElementById('settingsName').textContent = user.name;
-      document.getElementById('settingsEmail').textContent = user.email;
-      document.getElementById('settingsProvider').textContent = `Conectado con ${user.provider || 'Correo'}`;
+    const usuario = obtenerUsuario();
+    if (usuario) {
+      document.getElementById('avatarAjustes').textContent = usuario.inicial;
+      document.getElementById('nombreAjustes').textContent = usuario.nombre;
+      document.getElementById('correoAjustes').textContent = usuario.correo;
+      document.getElementById('proveedorAjustes').textContent = `Conectado con ${usuario.proveedor || 'Correo'}`;
     }
 
-    // Tema: el switch representa "tema oscuro" ENCENDIDO = oscuro
-    const themeToggle = document.getElementById('themeToggle');
-    const isLight = applyStoredTheme();
-    themeToggle.checked = !isLight;
-    themeToggle.addEventListener('change', () => {
-      setLightTheme(!themeToggle.checked);
-      notify(themeToggle.checked ? 'Tema oscuro activado' : 'Tema claro activado');
+    // el interruptor de "tema oscuro" prendido = modo oscuro
+    const interruptorTema = document.getElementById('interruptorTema');
+    const esClaro = aplicarTemaGuardado();
+    interruptorTema.checked = !esClaro;
+    interruptorTema.addEventListener('change', () => {
+      ponerTemaClaro(!interruptorTema.checked);
+      avisar(interruptorTema.checked ? 'Tema oscuro activado' : 'Tema claro activado');
     });
 
-    // Notificaciones: de verdad activan/desactivan los toasts del resto del panel
-    const notifToggle = document.getElementById('notifToggle');
-    notifToggle.checked = notificationsEnabled();
-    notifToggle.addEventListener('change', () => {
-      setNotificationsEnabled(notifToggle.checked);
-      if (notifToggle.checked) notify('Notificaciones activadas', 'ok');
+    // notificaciones: de veras prenden/apagan los avisos
+    // del resto del panel, no nomas es de adorno
+    const interruptorNotif = document.getElementById('interruptorNotif');
+    interruptorNotif.checked = notificacionesActivas();
+    interruptorNotif.addEventListener('change', () => {
+      guardarNotificaciones(interruptorNotif.checked);
+      if (interruptorNotif.checked) avisar('Notificaciones activadas', 'ok');
     });
 
-    // Token de administrador del backend de perfiles
-    const adminTokenSetting = document.getElementById('adminTokenSetting');
-    adminTokenSetting.value = localStorage.getItem('dp_admin_token') || '';
-    document.getElementById('saveTokenBtn').addEventListener('click', () => {
-      localStorage.setItem('dp_admin_token', adminTokenSetting.value.trim());
-      notify('Token guardado en este navegador', 'ok');
+    // token de administrador del backend de perfiles
+    const tokenAdminAjustes = document.getElementById('tokenAdminAjustes');
+    tokenAdminAjustes.value = localStorage.getItem('dp_admin_token') || '';
+    document.getElementById('botonGuardarToken').addEventListener('click', () => {
+      localStorage.setItem('dp_admin_token', tokenAdminAjustes.value.trim());
+      avisar('Token guardado en este navegador', 'ok');
     });
   </script>
 </body>

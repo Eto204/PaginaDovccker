@@ -12,7 +12,7 @@ Panel web para administrar perfiles en la PC compartida del proyecto (alumno, ma
 
 ## Tecnologías
 
-HTML5, CSS3 (variables CSS) y JavaScript sin frameworks ni build step. Son archivos estáticos.
+HTML5, CSS3 (variables CSS) y JavaScript sin frameworks ni build step. Son archivos estáticos. Los nombres de variables y funciones del JS están en español, por si alguien más de la escuela le sigue moviendo a esto.
 
 ## Estructura
 
@@ -30,7 +30,7 @@ acceso.css          estilos exclusivos de la pantalla de acceso
 base.css             estilos compartidos entre todas las vistas internas
 configuracion.js      URL del backend, lo único que normalmente hay que tocar
 sesion.js              sesión del panel (login, logout, tema, notificaciones)
-utilidades.js           funciones pequeñas compartidas (por ejemplo escapeHtml)
+utilidades.js           funciones pequeñas compartidas (por ejemplo escaparHtml)
 ```
 
 ## Cómo correrlo
@@ -50,30 +50,30 @@ También se puede abrir index.html directo con doble clic si no se necesita prob
 Toda la comunicación con el backend pasa por un solo archivo: configuracion.js
 
 ```
-const API_BASE = 'http://localhost:8000';
+const URL_BASE = 'http://localhost:8000';
 ```
 
 Si se abre el panel en la misma PC donde corre el backend, se deja así. Si se abre desde otra PC de la red, se cambia "localhost" por la IP real de esa máquina.
 
 ### Rutas del backend — pendientes de confirmar
 
-El frontend llama a estos endpoints a manera de ejemplo. Hay que confirmarlos contra el backend real del proyecto y ajustarlos si los nombres, métodos o campos son distintos.
+El frontend llama a estos endpoints a manera de ejemplo. Hay que confirmarlos contra el backend real del proyecto y ajustarlos si los nombres, métodos o campos son distintos. Los nombres de los campos del JSON (username, role, etc.) se dejaron en inglés porque son el contrato con el backend, no variables internas del frontend.
 
 Vista: perfiles.html
-Dónde: dentro del script, función loadProfiles
-Llamada actual: GET API_BASE/api/profiles
+Dónde: dentro del script, función cargarPerfiles
+Llamada actual: GET URL_BASE/api/profiles
 Qué se espera: devolver la lista de perfiles, algo como
 { "ok": true, "profiles": [{ "username": "...", "role": "...", "status": "...", "homeSize": "..." }] }
 
 Vista: crear-perfil.html
-Dónde: dentro del script, evento del botón buildBtn
-Llamada actual: POST API_BASE/api/profiles, con body { "username": "...", "role": "..." } y encabezado X-Admin-Token
+Dónde: dentro del script, evento del botón botonCrear
+Llamada actual: POST URL_BASE/api/profiles, con body { "username": "...", "role": "..." } y encabezado X-Admin-Token
 Qué se espera: crear un perfil y devolver algo como
 { "ok": true, "username": "...", "tempPassword": "...", "role": "..." }
 
 Vista: registros.html
-Dónde: dentro del script, función loadLogs
-Llamada actual: GET API_BASE/api/logs
+Dónde: dentro del script, función cargarRegistros
+Llamada actual: GET URL_BASE/api/logs
 Qué se espera: devolver el historial, algo como
 { "ok": true, "logs": [{ "time": "...", "text": "...", "type": "ok, warn o vacío" }] }
 
